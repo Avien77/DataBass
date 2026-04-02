@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Velocity | Staff Dashboard</title>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Velocity Admin</h2>
+        <p>User: Alice (Manager)</p>
+        <nav>
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="#">Inventory</a></li>
+                <li><a href="#">Member Search</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Ride Share Operations</h1>
+        </header>
+
+        <div class="grid-container">
+            <section class="card">
+                <h3>Hub Live Capacity</h3>
+                <table>
+                    <thead><tr><th>Hub</th><th>Max Slots</th></tr></thead>
+                    <tbody>
+                        {% for hub in hubs %}
+                        <tr><td>{{ hub.HubName }}</td><td>{{ hub.Capacity }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="card form-card">
+                <h3>Bike Checkout</h3>
+                <form action="/checkout" method="post">
+                    <input type="number" name="member_id" placeholder="Member ID" required>
+                    <input type="text" name="serial_num" placeholder="Bike Serial (e.g. B001)" required>
+                    <button type="submit">Rent Bike</button>
+                </form>
+            </section>
+        </div>
+
+        <section class="card">
+            <h3>Active Rentals (In Transit)</h3>
+            <table>
+                <thead><tr><th>Rider</th><th>Bike</th><th>Time Started</th></tr></thead>
+                <tbody>
+                    {% for rental in active_rentals %}
+                    <tr><td>{{ rental.MemberName }}</td><td>{{ rental.SerialNum }}</td><td>{{ rental.StartTime }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>
