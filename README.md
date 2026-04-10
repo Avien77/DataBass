@@ -1,6 +1,1 @@
-# 🚴VeloCity DB
-
-CSI 3450: Database Implementation and Design
-By Kaeden Bryer
-
-Bike rental system to illustrate good database design.
+DataBass is a uniform and instrument rental system for our local high school marching band.
