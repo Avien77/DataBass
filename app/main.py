@@ -42,7 +42,7 @@ def submit_measurements(
         "measurements.html",
         {
             "request": request,
-            "message": f"Submitted for {stud_id}"
+            "message": f"Measurements submitted for student {stud_id}"
         }
     )
 
@@ -54,12 +54,97 @@ def rental_page(request: Request):
 
 @app.post("/rental", response_class=HTMLResponse)
 def rental_lookup(request: Request, stud_id: str = Form(...)):
-    fake_data = [
-        {"item_type": "Uniform", "item_id": "U100", "status": "With Student"},
-        {"item_type": "Instrument", "item_id": "I55", "status": "Returned"},
+    rentals = [
+        {
+            "item_type": "Uniform",
+            "item_id": "U100",
+            "status": "With Student"
+        },
+        {
+            "item_type": "Instrument",
+            "item_id": "I55",
+            "status": "Returned"
+        }
     ]
 
     return templates.TemplateResponse(
         "rental.html",
-        {"request": request, "rentals": fake_data}
+        {
+            "request": request,
+            "rentals": rentals
+        }
+    )
+
+
+@app.get("/add-student", response_class=HTMLResponse)
+def add_student_page(request: Request):
+    return templates.TemplateResponse("add_student.html", {"request": request})
+
+
+@app.post("/add-student", response_class=HTMLResponse)
+def add_student_submit(
+    request: Request,
+    stud_id: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    phone: str = Form(""),
+    email: str = Form(""),
+    gender: str = Form(""),
+    student_year: str = Form(...),
+    role: str = Form("")
+):
+    return templates.TemplateResponse(
+        "add_student.html",
+        {
+            "request": request,
+            "message": f"Student {first_name} {last_name} added successfully"
+        }
+    )
+
+
+@app.get("/assign-uniform", response_class=HTMLResponse)
+def assign_uniform_page(request: Request):
+    return templates.TemplateResponse("assign_uniform.html", {"request": request})
+
+
+@app.post("/assign-uniform", response_class=HTMLResponse)
+def assign_uniform_submit(
+    request: Request,
+    stud_id: str = Form(...),
+    staff_id: str = Form(...),
+    uniform_type: str = Form(...),
+    uniform_id: str = Form(...),
+    start_condition: str = Form(...),
+    rental_start_date: str = Form(...)
+):
+    return templates.TemplateResponse(
+        "assign_uniform.html",
+        {
+            "request": request,
+            "message": f"{uniform_type} {uniform_id} assigned to student {stud_id}"
+        }
+    )
+
+
+@app.get("/return-item", response_class=HTMLResponse)
+def return_item_page(request: Request):
+    return templates.TemplateResponse("return_item.html", {"request": request})
+
+
+@app.post("/return-item", response_class=HTMLResponse)
+def return_item_submit(
+    request: Request,
+    stud_id: str = Form(...),
+    staff_id: str = Form(...),
+    item_type: str = Form(...),
+    item_id: str = Form(...),
+    end_condition: str = Form(...),
+    return_date: str = Form(...)
+):
+    return templates.TemplateResponse(
+        "return_item.html",
+        {
+            "request": request,
+            "message": f"{item_type} {item_id} returned for student {stud_id}"
+        }
     )
