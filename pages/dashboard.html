@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataBass Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/measurements">Input Measurements</a></li>
+            <li><a href="/rental">View Rental</a></li>
+            <li><a href="/students">Students</a></li>
+            <li><a href="/assign-uniform">Assign Uniform</a></li>
+            <li><a href="/assign-instrument">Assign Instrument</a></li>
+            <li><a href="/return-item">Return Item</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1>Marching Band Uniform Database</h1>
+
+        <div class="grid-container">
+            <div class="card">
+                <h3>Student Measurements</h3>
+                <p>Students can enter their measurements before uniform assignment.</p>
+                <a href="/measurements"><button>Open Form</button></a>
+            </div>
+
+            <div class="card">
+                <h3>Rental Lookup</h3>
+                <p>View uniform and instrument rental status by student ID.</p>
+                <a href="/rental"><button>View Rentals</button></a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Add Student</td>
+                        <td>Create a new student record</td>
+                    </tr>
+                    <tr>
+                        <td>Assign Uniform</td>
+                        <td>Issue a jacket or pants item to a student</td>
+                    </tr>
+                    <tr>
+                        <td>Assign Instrument</td>
+                        <td>Issue an instrument to a student</td>
+                    </tr>
+                    <tr>
+                        <td>Return Item</td>
+                        <td>Mark a rental as returned and update condition</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
