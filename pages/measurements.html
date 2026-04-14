@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Measurements</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <h2>DataBass</h2>
+</aside>
+
+<main class="main-content">
+
+    <div class="card form-card">
+        <h2>Input Measurements</h2>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
+        <form method="post" action="/measurements">
+            <input type="text" name="stud_id" placeholder="Student ID" required>
+            <input type="text" name="chest" placeholder="Chest">
+            <input type="text" name="arms" placeholder="Arms">
+            <input type="text" name="hips" placeholder="Hips">
+            <input type="text" name="waist" placeholder="Waist">
+            <input type="text" name="inseam" placeholder="Inseam">
+            <input type="text" name="gloves" placeholder="Gloves">
+            <input type="text" name="instrument" placeholder="Instrument">
+            <input type="text" name="role" placeholder="Role">
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+</main>
+
+</body>
+</html>
