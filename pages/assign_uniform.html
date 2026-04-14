@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Uniform</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/measurements">Input Measurements</a></li>
+            <li><a href="/rental">View Rental</a></li>
+            <li><a href="/add-student">Add Student</a></li>
+            <li><a href="/assign-uniform">Assign Uniform</a></li>
+            <li><a href="/return-item">Return Item</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Assign Uniform</h2>
+
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="/assign-uniform">
+                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <input type="text" name="staff_id" placeholder="Staff ID" required>
+
+                <select name="uniform_type" required>
+                    <option value="">Select Uniform Type</option>
+                    <option value="Jacket">Jacket</option>
+                    <option value="Pants">Pants</option>
+                    <option value="Gloves">Gloves</option>
+                </select>
+
+                <input type="text" name="uniform_id" placeholder="Uniform ID / Barcode" required>
+
+                <select name="start_condition" required>
+                    <option value="">Start Condition</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                </select>
+
+                <input type="date" name="rental_start_date" required>
+
+                <button type="submit">Assign Uniform</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Rules to Check</h3>
+            <table>
+                <tr>
+                    <th>Rule</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td>One active jacket</td>
+                    <td>A student may only have one active jacket assignment at a time</td>
+                </tr>
+                <tr>
+                    <td>One active pants</td>
+                    <td>A student may only have one active pants assignment at a time</td>
+                </tr>
+                <tr>
+                    <td>One active holder</td>
+                    <td>A uniform item may only be assigned to one student at a time</td>
+                </tr>
+                <tr>
+                    <td>Percussion gloves rule</td>
+                    <td>Percussion students should not be assigned gloves</td>
+                </tr>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>
