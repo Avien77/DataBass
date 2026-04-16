@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uniforms</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/assign-uniform">Assign Uniform</a></li>
+            <li><a href="/uniforms">Uniforms</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Uniform Inventory</h2>
+            <form method="get" action="/uniforms">
+                <input type="text" name="query" placeholder="Search by Uniform ID, type, size, or status">
+                <button type="submit">Search Uniforms</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Uniform List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Uniform ID</th>
+                        <th>Type</th>
+                        <th>Role</th>
+                        <th>Size</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if uniforms %}
+                        {% for uniform in uniforms %}
+                        <tr>
+                            <td>{{ uniform.uniform_id }}</td>
+                            <td>{{ uniform.uniform_type }}</td>
+                            <td>{{ uniform.role }}</td>
+                            <td>{{ uniform.size }}</td>
+                            <td>{{ uniform.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No uniforms to display.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
