@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/student-details">Student Details</a></li>
+            <li><a href="/uniforms">Uniforms</a></li>
+            <li><a href="/instruments">Instruments</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Search Database</h2>
+
+            <form method="get" action="/search">
+                <select name="category">
+                    <option value="">Select Category</option>
+                    <option value="students">Students</option>
+                    <option value="guardians">Guardians</option>
+                    <option value="uniforms">Uniforms</option>
+                    <option value="instruments">Instruments</option>
+                    <option value="rentals">Rentals</option>
+                </select>
+
+                <input type="text" name="query" placeholder="Enter search term">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if results %}
+        <div class="card">
+            <h3>Search Results</h3>
+            <table>
+                <thead>
+                    <tr>
+                        {% for header in headers %}
+                        <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr>
+                        {% for value in row %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>
