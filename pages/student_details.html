@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/add-student">Add Student</a></li>
+            <li><a href="/edit-student">Edit Student</a></li>
+            <li><a href="/add-guardian">Add Guardian</a></li>
+            <li><a href="/link-guardian">Link Guardian</a></li>
+            <li><a href="/assign-uniform">Assign Uniform</a></li>
+            <li><a href="/assign-instrument">Assign Instrument</a></li>
+            <li><a href="/return-item">Return Item</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Student Details</h2>
+            <form method="get" action="/student-details">
+                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <button type="submit">Load Student</button>
+            </form>
+        </div>
+
+        {% if student %}
+        <div class="card">
+            <h3>Student Information</h3>
+            <table>
+                <tr><th>Student ID</th><td>{{ student.stud_id }}</td></tr>
+                <tr><th>Name</th><td>{{ student.first_name }} {{ student.last_name }}</td></tr>
+                <tr><th>Phone</th><td>{{ student.phone }}</td></tr>
+                <tr><th>Email</th><td>{{ student.email }}</td></tr>
+                <tr><th>Gender</th><td>{{ student.gender }}</td></tr>
+                <tr><th>Year</th><td>{{ student.student_year }}</td></tr>
+                <tr><th>Role</th><td>{{ student.role }}</td></tr>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if guardians %}
+        <div class="card">
+            <h3>Guardians</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Guardian ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for guardian in guardians %}
+                    <tr>
+                        <td>{{ guardian.guard_id }}</td>
+                        <td>{{ guardian.first_name }} {{ guardian.last_name }}</td>
+                        <td>{{ guardian.phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if rentals %}
+        <div class="card">
+            <h3>Rental History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Type</th>
+                        <th>Item ID</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.item_type }}</td>
+                        <td>{{ rental.item_id }}</td>
+                        <td>{{ rental.status }}</td>
+                        <td>{{ rental.start_date }}</td>
+                        <td>{{ rental.end_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>
