@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Guardian</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/add-student">Add Student</a></li>
+            <li><a href="/student-details">Student Details</a></li>
+            <li><a href="/add-guardian">Add Guardian</a></li>
+            <li><a href="/link-guardian">Link Guardian</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Add Guardian</h2>
+
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="/add-guardian">
+                <input type="text" name="guard_id" placeholder="Guardian ID" required>
+                <input type="text" name="first_name" placeholder="First Name" required>
+                <input type="text" name="last_name" placeholder="Last Name" required>
+                <input type="text" name="phone" placeholder="Phone Number" required>
+                <input type="email" name="email" placeholder="Email Address">
+                <button type="submit">Add Guardian</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
