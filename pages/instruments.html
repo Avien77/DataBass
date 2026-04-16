@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instruments</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/assign-instrument">Assign Instrument</a></li>
+            <li><a href="/instruments">Instruments</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Instrument Inventory</h2>
+            <form method="get" action="/instruments">
+                <input type="text" name="query" placeholder="Search by Instrument ID, type, brand, or status">
+                <button type="submit">Search Instruments</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Instrument List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instrument ID</th>
+                        <th>Type</th>
+                        <th>Brand</th>
+                        <th>Asset ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if instruments %}
+                        {% for instrument in instruments %}
+                        <tr>
+                            <td>{{ instrument.instrument_id }}</td>
+                            <td>{{ instrument.instrument_type }}</td>
+                            <td>{{ instrument.brand }}</td>
+                            <td>{{ instrument.asset_id }}</td>
+                            <td>{{ instrument.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No instruments to display.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
