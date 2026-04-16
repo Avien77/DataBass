@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2>DataBass</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/add-student">Add Student</a></li>
+            <li><a href="/student-details">Student Details</a></li>
+            <li><a href="/add-guardian">Add Guardian</a></li>
+            <li><a href="/link-guardian">Link Guardian</a></li>
+            <li><a href="/assign-instrument">Assign Instrument</a></li>
+            <li><a href="/uniforms">Uniforms</a></li>
+            <li><a href="/instruments">Instruments</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>Edit Student</h2>
+
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="/edit-student">
+                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <input type="text" name="first_name" placeholder="First Name" value="{{ student.first_name if student else '' }}">
+                <input type="text" name="last_name" placeholder="Last Name" value="{{ student.last_name if student else '' }}">
+                <input type="text" name="phone" placeholder="Phone Number" value="{{ student.phone if student else '' }}">
+                <input type="email" name="email" placeholder="Email Address" value="{{ student.email if student else '' }}">
+
+                <select name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male" {% if student and student.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if student and student.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if student and student.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+
+                <select name="student_year">
+                    <option value="">Select Year</option>
+                    <option value="Freshman" {% if student and student.student_year == 'Freshman' %}selected{% endif %}>Freshman</option>
+                    <option value="Sophomore" {% if student and student.student_year == 'Sophomore' %}selected{% endif %}>Sophomore</option>
+                    <option value="Junior" {% if student and student.student_year == 'Junior' %}selected{% endif %}>Junior</option>
+                    <option value="Senior" {% if student and student.student_year == 'Senior' %}selected{% endif %}>Senior</option>
+                </select>
+
+                <select name="role">
+                    <option value="">Select Role</option>
+                    <option value="Regular" {% if student and student.role == 'Regular' %}selected{% endif %}>Regular</option>
+                    <option value="Drum Major" {% if student and student.role == 'Drum Major' %}selected{% endif %}>Drum Major</option>
+                    <option value="Colorguard" {% if student and student.role == 'Colorguard' %}selected{% endif %}>Colorguard</option>
+                    <option value="Percussion" {% if student and student.role == 'Percussion' %}selected{% endif %}>Percussion</option>
+                </select>
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
