@@ -48,9 +48,9 @@ def init_db():
     except Exception as e:
         print(f"CRITICAL ERROR during DB Setup: {e}")
     finally:
-        if 'conn' in locals() and conn.is_connected():
-            cursor.close()
-            conn.close()
+        if 'conn' in locals() and conn.is_connected(): #type: ignore
+            cursor.close() #type: ignore
+            conn.close() #type: ignore
 
 if __name__ == "__main__":
     init_db()

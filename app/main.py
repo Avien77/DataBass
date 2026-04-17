@@ -11,17 +11,17 @@ templates = Jinja2Templates(directory="pages")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse(request, "dashboard.html")
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse(request, "dashboard.html")
 
 
 @app.get("/measurements", response_class=HTMLResponse)
 def measurements_page(request: Request):
-    return templates.TemplateResponse("measurements.html", {"request": request})
+    return templates.TemplateResponse(request, "measurements.html")
 
 
 @app.post("/measurements", response_class=HTMLResponse)
@@ -39,6 +39,7 @@ def submit_measurements(
     student_year: str = Form("")
 ):
     return templates.TemplateResponse(
+        request,
         "measurements.html",
         {
             "request": request,
@@ -49,7 +50,7 @@ def submit_measurements(
 
 @app.get("/rental", response_class=HTMLResponse)
 def rental_page(request: Request):
-    return templates.TemplateResponse("rental.html", {"request": request})
+    return templates.TemplateResponse(request, "rental.html")
 
 
 @app.post("/rental", response_class=HTMLResponse)
@@ -72,6 +73,7 @@ def rental_lookup(request: Request, stud_id: str = Form(...)):
     ]
 
     return templates.TemplateResponse(
+        request,
         "rental.html",
         {
             "request": request,
@@ -82,7 +84,7 @@ def rental_lookup(request: Request, stud_id: str = Form(...)):
 
 @app.get("/add-student", response_class=HTMLResponse)
 def add_student_page(request: Request):
-    return templates.TemplateResponse("add_student.html", {"request": request})
+    return templates.TemplateResponse(request, "add_student.html")
 
 
 @app.post("/add-student", response_class=HTMLResponse)
@@ -98,6 +100,7 @@ def add_student_submit(
     role: str = Form("")
 ):
     return templates.TemplateResponse(
+        request,
         "add_student.html",
         {
             "request": request,
@@ -109,6 +112,7 @@ def add_student_submit(
 @app.get("/edit-student", response_class=HTMLResponse)
 def edit_student_page(request: Request):
     return templates.TemplateResponse(
+        request,
         "edit_student.html",
         {
             "request": request,
@@ -141,6 +145,7 @@ def edit_student_submit(
     }
 
     return templates.TemplateResponse(
+        request,
         "edit_student.html",
         {
             "request": request,
@@ -195,6 +200,7 @@ def student_details_page(request: Request, stud_id: str = ""):
         ]
 
     return templates.TemplateResponse(
+        request,
         "student_details.html",
         {
             "request": request,
@@ -207,7 +213,7 @@ def student_details_page(request: Request, stud_id: str = ""):
 
 @app.get("/add-guardian", response_class=HTMLResponse)
 def add_guardian_page(request: Request):
-    return templates.TemplateResponse("add_guardian.html", {"request": request})
+    return templates.TemplateResponse(request, "add_guardian.html")
 
 
 @app.post("/add-guardian", response_class=HTMLResponse)
@@ -220,6 +226,7 @@ def add_guardian_submit(
     email: str = Form("")
 ):
     return templates.TemplateResponse(
+        request,
         "add_guardian.html",
         {
             "request": request,
@@ -230,7 +237,7 @@ def add_guardian_submit(
 
 @app.get("/link-guardian", response_class=HTMLResponse)
 def link_guardian_page(request: Request):
-    return templates.TemplateResponse("link_guardian.html", {"request": request})
+    return templates.TemplateResponse(request, "link_guardian.html")
 
 
 @app.post("/link-guardian", response_class=HTMLResponse)
@@ -240,6 +247,7 @@ def link_guardian_submit(
     guard_id: str = Form(...)
 ):
     return templates.TemplateResponse(
+        request,
         "link_guardian.html",
         {
             "request": request,
@@ -250,7 +258,7 @@ def link_guardian_submit(
 
 @app.get("/assign-uniform", response_class=HTMLResponse)
 def assign_uniform_page(request: Request):
-    return templates.TemplateResponse("assign_uniform.html", {"request": request})
+    return templates.TemplateResponse(request, "assign_uniform.html")
 
 
 @app.post("/assign-uniform", response_class=HTMLResponse)
@@ -264,6 +272,7 @@ def assign_uniform_submit(
     rental_start_date: str = Form(...)
 ):
     return templates.TemplateResponse(
+        request,
         "assign_uniform.html",
         {
             "request": request,
@@ -274,7 +283,7 @@ def assign_uniform_submit(
 
 @app.get("/assign-instrument", response_class=HTMLResponse)
 def assign_instrument_page(request: Request):
-    return templates.TemplateResponse("assign_instrument.html", {"request": request})
+    return templates.TemplateResponse(request, "assign_instrument.html")
 
 
 @app.post("/assign-instrument", response_class=HTMLResponse)
@@ -287,6 +296,7 @@ def assign_instrument_submit(
     rental_start_date: str = Form(...)
 ):
     return templates.TemplateResponse(
+        request,
         "assign_instrument.html",
         {
             "request": request,
@@ -297,7 +307,7 @@ def assign_instrument_submit(
 
 @app.get("/return-item", response_class=HTMLResponse)
 def return_item_page(request: Request):
-    return templates.TemplateResponse("return_item.html", {"request": request})
+    return templates.TemplateResponse(request, "return_item.html")
 
 
 @app.post("/return-item", response_class=HTMLResponse)
@@ -311,6 +321,7 @@ def return_item_submit(
     return_date: str = Form(...)
 ):
     return templates.TemplateResponse(
+        request,
         "return_item.html",
         {
             "request": request,
@@ -350,6 +361,7 @@ def uniforms_page(request: Request, query: str = ""):
         ]
 
     return templates.TemplateResponse(
+        request,
         "uniforms.html",
         {
             "request": request,
@@ -389,6 +401,7 @@ def instruments_page(request: Request, query: str = ""):
         ]
 
     return templates.TemplateResponse(
+        request,
         "instruments.html",
         {
             "request": request,
@@ -441,6 +454,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
         ]
 
     return templates.TemplateResponse(
+        request,
         "search.html",
         {
             "request": request,
