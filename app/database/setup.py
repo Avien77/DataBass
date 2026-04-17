@@ -33,7 +33,7 @@ def init_db():
             "Role": "CREATE TABLE IF NOT EXISTS Role (Role_ID INT PRIMARY KEY, Role_Name VARCHAR(50), UNIQUE (Role_Name))",
             "Guardian": "CREATE TABLE IF NOT EXISTS Guardian (Guardian_ID INT PRIMARY KEY, Guardian_FName VARCHAR(50), Guardian_LName VARCHAR(50), Guardian_Phone VARCHAR(15))",
             "Student_Role": "CREATE TABLE IF NOT EXISTS Student_Role (Stud_ID INT, Role_ID INT, PRIMARY KEY (Stud_ID, Role_ID), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Role_ID) REFERENCES Role(Role_ID))",
-            "Student_Uniform_Rentals": "CREATE TABLE IF NOT EXISTS Student_Uniform_Rentals (Uniform_ID INT PRIMARY KEY, Stud_ID int, Uniform_ID INT, Unif_Rental_Start_Date DATE, Unif_Rental_End_Date DATE, Unif_Start_Condition VARCHAR(100), Unif_End_Condition VARCHAR(100), FOREIGN KEY (Stud_ID), FOREIGN KEY (Uniform_ID))",
+            "Student_Uniform_Rentals": "CREATE TABLE IF NOT EXISTS Student_Uniform_Rentals (Uniform_Rental_ID INT PRIMARY KEY, Stud_ID int, Uniform_ID INT, Unif_Rental_Start_Date DATE, Unif_Rental_End_Date DATE, Unif_Start_Condition VARCHAR(100), Unif_End_Condition VARCHAR(100), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Uniform_ID) REFERENCES Uniform(Uniform_ID))",
             "Student_Instrument_Rentals": "CREATE TABLE IF NOT EXISTS Student_Instrument_Rentals (Instr_Rental_ID INT PRIMARY KEY, Stud_ID INT, Instrument_ID INT, Instr_Rental_Start_Date DATE, Instr_Rental_End_Date DATE, Instr_Start_Condition VARCHAR(100), Instr_End_Condition VARCHAR(100), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Instrument_ID) REFERENCES Instrument(Instrument_ID))",
             "Student_Role": "CREATE TABLE IF NOT EXISTS Student_Role (Stud_ID INT, Role_ID INT, PRIMARY KEY (Stud_ID, Role_ID), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Role_ID) REFERENCES Role(Role_ID))",
             "Student_Guardian": "CREATE TABLE IF NOT EXISTS Student_Guardian (Stud_ID INT, Guardian_ID INT, PRIMARY KEY (Stud_ID, Guardian_ID), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Guardian_ID) REFERENCES Guardian(Guardian_ID))"
@@ -42,12 +42,6 @@ def init_db():
         for name, ddl in tables.items():
             cursor.execute(ddl)
             print(f"Table '{name}' verified/created.")
-
-        # Seed Data (Idempotent using INSERT IGNORE)
-        cursor.execute("INSERT IGNORE INTO Tiers VALUES (1, 'Standard', 5.00), (2, 'Premium', 10.00)")
-        cursor.execute("INSERT IGNORE INTO Hubs VALUES (1, 'Downtown Central', 25), (2, 'North Campus', 15)")
-        cursor.execute("INSERT IGNORE INTO Members (MemberID, Name, TierID) VALUES (1, 'Alice Jones', 2), (2, 'Bob Smith', 1)")
-        cursor.execute("INSERT IGNORE INTO Bikes VALUES ('B001', 'Roadster', 'Available', 1), ('B002', 'Electric', 'Available', 2)")
         
         conn.commit()
         print("--- Database Setup Complete ---")
