@@ -25,6 +25,14 @@ db_pool = pooling.MySQLConnectionPool(
     database=os.getenv("DB_NAME")
 )
 
+# we probably shouldn't need this if we follow good practices
+year_to_id = { 
+        "Freshman": 1, 
+        "Sophomore": 2, 
+        "Junior": 3,
+        "Senior": 4
+    }
+
 def get_db_conn():
     """Retrieves a connection from the pre-warmed connection pool."""
     print("Connected to database")
@@ -116,7 +124,7 @@ def add_student_page(request: Request):
     return templates.TemplateResponse(request, "add_student.html")
 
 
-@app.post("/add-student", response_class=HTMLResponse)
+@app.post("/add-student")
 def add_student_submit(
     request: Request,
     stud_id: str = Form(...),
@@ -126,15 +134,41 @@ def add_student_submit(
     email: str = Form(""),
     gender: str = Form(""),
     student_year: str = Form(...),
-    role: str = Form("")
 ):
+    conn = get_db_conn()
+    cursor = conn.cursor()
+
+    success = False
+    error_message = None
+
+    yearId = year_to_id[student_year]
+
+    try:
+        cursor.execute("INSERT INTO Student (Stud_ID, Stud_FName, Stud_LName, Stud_Phone, Year_ID, Stud_Gender, Stud_Email) " \
+        "VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+        (stud_id, first_name, last_name, phone, yearId, gender, email))
+        conn.commit()
+        success = True
+    except Exception as e:
+        conn.rollback()
+        error_message = str(e)
+        print(f"Transaction Failed: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return templates.TemplateResponse(
+            request,
+            "add_student.html",
+            {"request": request, "message": f"Student {first_name} {last_name} added successfully"},
+            status_code=200
+        )
     return templates.TemplateResponse(
         request,
         "add_student.html",
-        {
-            "request": request,
-            "message": f"Student {first_name} {last_name} added successfully"
-        }
+        {"request": request, "error": f"Failed to add student: {error_message}"},
+        status_code=500
     )
 
 
