@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, APIRouter, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app import db
@@ -11,12 +11,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
 # we probably shouldn't need this if we follow good practices
-year_to_id = { 
-        "Freshman": 1, 
-        "Sophomore": 2, 
+year_to_id = {
+        "Freshman": 1,
+        "Sophomore": 2,
         "Junior": 3,
         "Senior": 4
     }
+
+id_to_year = {v: k for k, v in year_to_id.items()}
 
 @router.get("/student-list", response_class=HTMLResponse)
 def add_student_list_page(request: Request):
@@ -141,12 +143,7 @@ def add_student_submit(
         conn.close()
 
     if success:
-        return templates.TemplateResponse(
-            request,
-            "add_student.html",
-            {"request": request, "message": f"Student {first_name} {last_name} added successfully"},
-            status_code=200
-        )
+        return RedirectResponse(url="/student-list", status_code=303)
     return templates.TemplateResponse(
         request,
         "add_student.html",
@@ -154,48 +151,65 @@ def add_student_submit(
         status_code=500
     )
 
-@router.post("/edit-student", response_class=HTMLResponse)
+@router.get("/edit-student/{id}", response_class=HTMLResponse)
+def edit_student_page(request: Request, id: str):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM Student WHERE Stud_ID = %s", (id,))
+        student = cursor.fetchone()
+    finally:
+        cursor.close()
+        conn.close()
+
+    if not student:
+        return RedirectResponse(url="/student-list", status_code=303)
+
+    student["Year_Name"] = id_to_year.get(student["Year_ID"], "")
+    return templates.TemplateResponse(request, "add_student.html", {"student": student})
+
+
+@router.post("/edit-student/{id}")
 def edit_student_submit(
     request: Request,
-    stud_id: str = Form(...),
-    first_name: str = Form(""),
-    last_name: str = Form(""),
+    id: str,
+    first_name: str = Form(...),
+    last_name: str = Form(...),
     phone: str = Form(""),
     email: str = Form(""),
     gender: str = Form(""),
-    student_year: str = Form(""),
-    role: str = Form("")
+    student_year: str = Form(...),
 ):
-    student = {
-        "stud_id": stud_id,
-        "first_name": first_name,
-        "last_name": last_name,
-        "phone": phone,
-        "email": email,
-        "gender": gender,
-        "student_year": student_year,
-        "role": role
-    }
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
 
+    success = False
+    error_message = None
+    yearId = year_to_id[student_year]
+
+    try:
+        cursor.execute(
+            "UPDATE Student SET Stud_FName=%s, Stud_LName=%s, Stud_Phone=%s, Year_ID=%s, Stud_Gender=%s, Stud_Email=%s WHERE Stud_ID=%s",
+            (first_name, last_name, phone, yearId, gender, email, id)
+        )
+        conn.commit()
+        success = True
+    except Exception as e:
+        conn.rollback()
+        error_message = str(e)
+        print(f"Transaction Failed: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return RedirectResponse(url="/student-list", status_code=303)
     return templates.TemplateResponse(
         request,
-        "edit_student.html",
-        {
-            "request": request,
-            "student": student,
-            "message": f"Student {stud_id} updated successfully"
-        }
-    )
-
-@router.get("/edit-student", response_class=HTMLResponse)
-def edit_student_page(request: Request):
-    return templates.TemplateResponse(
-        request,
-        "edit_student.html",
-        {
-            "request": request,
-            "student": None
-        }
+        "add_student.html",
+        {"student": {"Stud_ID": id}, "error": f"Failed to update student: {error_message}"},
+        status_code=500
     )
 
 @router.get("/student-details", response_class=HTMLResponse)

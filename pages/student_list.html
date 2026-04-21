@@ -23,6 +23,7 @@
         {% if students %}
         <div class="card">
             <h3>Student List</h3>
+            <button type="submit"><a href="/add-student">Add Student</a></button>
             <table>
                 <tr>
                     <th>Student ID</th>
@@ -32,6 +33,7 @@
                     <th>Year</th>
                     <th>Gender</th>
                     <th>Email</th>
+                    <th>Actions</th>
                 </tr>
 
                 {% for s in students %}
@@ -43,6 +45,7 @@
                     <td>{{ s.Year_ID }}</td>
                     <td>{{ s.Stud_Gender }}</td>
                     <td>{{ s.Stud_Email }}</td>
+                    <td><a href="/edit-student/{{ s.Stud_ID }}">Edit Student</a></td>
                 </tr>
                 {% endfor %}
 
