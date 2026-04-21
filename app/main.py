@@ -1,18 +1,47 @@
+import os
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from mysql.connector import pooling
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = FastAPI(title="DataBass")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
+# Initialize Connection Pool
+# pooling prevents the overhead of opening/closing connections for every request.
+db_pool = pooling.MySQLConnectionPool(
+    pool_name="velocity_pool",
+    pool_size=10,  # Max 10 simultaneous connections
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS"),
+    database=os.getenv("DB_NAME")
+)
+
+def get_db_conn():
+    """Retrieves a connection from the pre-warmed connection pool."""
+    print("Connected to database")
+    return db_pool.get_connection()
+
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse(request, "dashboard.html")
+    conn = get_db_conn()
+    cursor = conn.cursor(dictionary=True)
 
+    try:
+
+        return templates.TemplateResponse(request, "dashboard.html")
+    finally:
+        cursor.close()
+        conn.close() # Returns connection to pool
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):

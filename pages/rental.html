@@ -2,49 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    {% include 'sidebar.html' %}
 
-<aside class="sidebar">
-    <h2>DataBass</h2>
-</aside>
+    <main class="main-content">
 
-<main class="main-content">
+        <div class="card form-card">
+            <h2>View Rental</h2>
 
-    <div class="card form-card">
-        <h2>View Rental</h2>
+            <form method="post" action="/rental">
+                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
 
-        <form method="post" action="/rental">
-            <input type="text" name="stud_id" placeholder="Student ID" required>
-            <button type="submit">Search</button>
-        </form>
-    </div>
+        {% if rentals %}
+        <div class="card">
+            <h3>Rental Results</h3>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>ID</th>
+                    <th>Status</th>
+                </tr>
 
-    {% if rentals %}
-    <div class="card">
-        <h3>Rental Results</h3>
-        <table>
-            <tr>
-                <th>Item</th>
-                <th>ID</th>
-                <th>Status</th>
-            </tr>
+                {% for r in rentals %}
+                <tr>
+                    <td>{{ r.item_type }}</td>
+                    <td>{{ r.item_id }}</td>
+                    <td>{{ r.status }}</td>
+                </tr>
+                {% endfor %}
 
-            {% for r in rentals %}
-            <tr>
-                <td>{{ r.item_type }}</td>
-                <td>{{ r.item_id }}</td>
-                <td>{{ r.status }}</td>
-            </tr>
-            {% endfor %}
+            </table>
+        </div>
+        {% endif %}
 
-        </table>
-    </div>
-    {% endif %}
-
-</main>
+    </main>
 
 </body>
 </html>

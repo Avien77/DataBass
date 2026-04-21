@@ -7,17 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <aside class="sidebar">
-        <h2>DataBass</h2>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/student-details">Student Details</a></li>
-            <li><a href="/assign-instrument">Assign Instrument</a></li>
-            <li><a href="/return-item">Return Item</a></li>
-            <li><a href="/instruments">Instruments</a></li>
-            <li><a href="/search">Search</a></li>
-        </ul>
-    </aside>
+    {% include 'sidebar.html' %}
 
     <main class="main-content">
         <div class="card form-card">
@@ -32,7 +22,7 @@
                 <input type="text" name="staff_id" placeholder="Staff ID" required>
                 <input type="text" name="instrument_id" placeholder="Instrument ID / Asset ID" required>
 
-                <select name="start_condition" required>
+                <select title="Start Condition" name="start_condition" required>
                     <option value="">Start Condition</option>
                     <option value="Excellent">Excellent</option>
                     <option value="Good">Good</option>
@@ -40,7 +30,7 @@
                     <option value="Poor">Poor</option>
                 </select>
 
-                <input type="date" name="rental_start_date" required>
+                <input title="Date" type="date" name="rental_start_date" required>
                 <button type="submit">Assign Instrument</button>
             </form>
         </div>

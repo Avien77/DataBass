@@ -7,23 +7,14 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <aside class="sidebar">
-        <h2>DataBass</h2>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/student-details">Student Details</a></li>
-            <li><a href="/uniforms">Uniforms</a></li>
-            <li><a href="/instruments">Instruments</a></li>
-            <li><a href="/search">Search</a></li>
-        </ul>
-    </aside>
+    {% include 'sidebar.html' %}
 
     <main class="main-content">
         <div class="card form-card">
             <h2>Search Database</h2>
 
             <form method="get" action="/search">
-                <select name="category">
+                <select title="Category" name="category">
                     <option value="">Select Category</option>
                     <option value="students">Students</option>
                     <option value="guardians">Guardians</option>

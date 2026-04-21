@@ -7,20 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <aside class="sidebar">
-        <h2>DataBass</h2>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/add-student">Add Student</a></li>
-            <li><a href="/student-details">Student Details</a></li>
-            <li><a href="/add-guardian">Add Guardian</a></li>
-            <li><a href="/link-guardian">Link Guardian</a></li>
-            <li><a href="/assign-instrument">Assign Instrument</a></li>
-            <li><a href="/uniforms">Uniforms</a></li>
-            <li><a href="/instruments">Instruments</a></li>
-            <li><a href="/search">Search</a></li>
-        </ul>
-    </aside>
+    {% include 'sidebar.html' %}
 
     <main class="main-content">
         <div class="card form-card">
@@ -37,14 +24,14 @@
                 <input type="text" name="phone" placeholder="Phone Number" value="{{ student.phone if student else '' }}">
                 <input type="email" name="email" placeholder="Email Address" value="{{ student.email if student else '' }}">
 
-                <select name="gender">
+                <select title="Gender" name="gender">
                     <option value="">Select Gender</option>
                     <option value="Male" {% if student and student.gender == 'Male' %}selected{% endif %}>Male</option>
                     <option value="Female" {% if student and student.gender == 'Female' %}selected{% endif %}>Female</option>
                     <option value="Other" {% if student and student.gender == 'Other' %}selected{% endif %}>Other</option>
                 </select>
 
-                <select name="student_year">
+                <select title="Student Year" name="student_year">
                     <option value="">Select Year</option>
                     <option value="Freshman" {% if student and student.student_year == 'Freshman' %}selected{% endif %}>Freshman</option>
                     <option value="Sophomore" {% if student and student.student_year == 'Sophomore' %}selected{% endif %}>Sophomore</option>
@@ -52,7 +39,7 @@
                     <option value="Senior" {% if student and student.student_year == 'Senior' %}selected{% endif %}>Senior</option>
                 </select>
 
-                <select name="role">
+                <select title="Role" name="role">
                     <option value="">Select Role</option>
                     <option value="Regular" {% if student and student.role == 'Regular' %}selected{% endif %}>Regular</option>
                     <option value="Drum Major" {% if student and student.role == 'Drum Major' %}selected{% endif %}>Drum Major</option>

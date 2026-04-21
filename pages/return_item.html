@@ -7,18 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-
-    <aside class="sidebar">
-        <h2>DataBass</h2>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/measurements">Input Measurements</a></li>
-            <li><a href="/rental">View Rental</a></li>
-            <li><a href="/add-student">Add Student</a></li>
-            <li><a href="/assign-uniform">Assign Uniform</a></li>
-            <li><a href="/return-item">Return Item</a></li>
-        </ul>
-    </aside>
+    {% include 'sidebar.html' %}
 
     <main class="main-content">
         <div class="card form-card">
@@ -32,7 +21,7 @@
                 <input type="text" name="stud_id" placeholder="Student ID" required>
                 <input type="text" name="staff_id" placeholder="Staff ID" required>
 
-                <select name="item_type" required>
+                <select title="Item Type" name="item_type" required>
                     <option value="">Select Item Type</option>
                     <option value="Uniform">Uniform</option>
                     <option value="Instrument">Instrument</option>
@@ -40,7 +29,7 @@
 
                 <input type="text" name="item_id" placeholder="Uniform ID or Instrument ID" required>
 
-                <select name="end_condition" required>
+                <select title="End Condition" name="end_condition" required>
                     <option value="">End Condition</option>
                     <option value="Excellent">Excellent</option>
                     <option value="Good">Good</option>
@@ -49,7 +38,7 @@
                     <option value="Damaged">Damaged</option>
                 </select>
 
-                <input type="date" name="return_date" required>
+                <input title="Date" type="date" name="return_date" required>
 
                 <button type="submit">Return Item</button>
             </form>

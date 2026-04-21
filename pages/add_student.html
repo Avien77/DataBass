@@ -8,17 +8,7 @@
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h2>DataBass</h2>
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/measurements">Input Measurements</a></li>
-            <li><a href="/rental">View Rental</a></li>
-            <li><a href="/add-student">Add Student</a></li>
-            <li><a href="/assign-uniform">Assign Uniform</a></li>
-            <li><a href="/return-item">Return Item</a></li>
-        </ul>
-    </aside>
+    {% include 'sidebar.html' %}
 
     <main class="main-content">
         <div class="card form-card">
@@ -35,14 +25,14 @@
                 <input type="text" name="phone" placeholder="Phone Number">
                 <input type="email" name="email" placeholder="Email Address">
 
-                <select name="gender">
+                <select title="gender" name="gender">
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                 </select>
 
-                <select name="student_year" required>
+                <select title="student-year" name="student_year" required>
                     <option value="">Select Year</option>
                     <option value="Freshman">Freshman</option>
                     <option value="Sophomore">Sophomore</option>
@@ -50,7 +40,7 @@
                     <option value="Senior">Senior</option>
                 </select>
 
-                <select name="role">
+                <select title="role" name="role">
                     <option value="">Select Role</option>
                     <option value="Regular">Regular</option>
                     <option value="Drum Major">Drum Major</option>
