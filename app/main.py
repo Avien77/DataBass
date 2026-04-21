@@ -286,15 +286,40 @@ def add_guardian_submit(
     first_name: str = Form(...),
     last_name: str = Form(...),
     phone: str = Form(...),
-    email: str = Form("")
 ):
+    
+    conn = get_db_conn()
+    cursor = conn.cursor()
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("INSERT INTO Guardian (Guardian_ID, Guardian_FName, Guardian_LName, Guardian_Phone) VALUES" \
+        "(%s, %s, %s, %s)",
+        (guard_id, first_name, last_name, phone))
+        conn.commit()
+        success = True
+    except Exception as e:
+        conn.rollback()
+        error_message = str(e)
+        print(f"Transaction Failed: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return templates.TemplateResponse(
+            request,
+            "add_guardian.html",
+            {"request": request, "message": f"Guardian {first_name} {last_name} added successfully"},
+            status_code=200
+        )
     return templates.TemplateResponse(
         request,
         "add_guardian.html",
-        {
-            "request": request,
-            "message": f"Guardian {first_name} {last_name} added successfully"
-        }
+        {"request": request, "error": f"Failed to add guardian: {error_message}"},
+        status_code=500
     )
 
 
