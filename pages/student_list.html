@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Students</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <main class="main-content">
+
+        <div class="card form-card">
+            <h2>Student List</hd>
+
+            <form method="post" action="/search-student">
+                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    
+        {% if students %}
+        <div class="card">
+            <h3>Student List</h3>
+            <table>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                    <th>Year</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                </tr>
+
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.Stud_ID }}</td>
+                    <td>{{ s.Stud_FName }}</td>
+                    <td>{{ s.Stud_LName }}</td>
+                    <td>{{ s.Stud_Phone }}</td>
+                    <td>{{ s.Year_ID }}</td>
+                    <td>{{ s.Stud_Gender }}</td>
+                    <td>{{ s.Stud_Email }}</td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        {% else %}
+        <h1>Failed to fetch students</h1>
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

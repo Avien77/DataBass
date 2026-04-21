@@ -18,6 +18,41 @@ year_to_id = {
         "Senior": 4
     }
 
+@router.get("/student-list", response_class=HTMLResponse)
+def add_student_list_page(request: Request):
+
+    # get connection/cursor
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("SELECT * FROM STUDENT")
+        students = cursor.fetchall()
+        print(students)
+        success=True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return templates.TemplateResponse(
+            request=request, 
+            name="student_list.html",
+            context={"students": students}, #type: ignore
+            status_code=200
+        )
+    return templates.TemplateResponse(
+        request=request,
+        name="student_list.html",
+        status_code=500
+    )
+
 @router.get("/add-student", response_class=HTMLResponse)
 def add_student_page(request: Request):
     return templates.TemplateResponse(request, "add_student.html")
@@ -70,8 +105,6 @@ def add_student_submit(
         status_code=500
     )
 
-
-
 @router.post("/edit-student", response_class=HTMLResponse)
 def edit_student_submit(
     request: Request,
@@ -115,7 +148,6 @@ def edit_student_page(request: Request):
             "student": None
         }
     )
-
 
 @router.get("/student-details", response_class=HTMLResponse)
 def student_details_page(request: Request, stud_id: str = ""):

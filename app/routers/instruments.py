@@ -10,7 +10,6 @@ app = FastAPI(title="DataBass")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
-
 @router.get("/assign-instrument", response_class=HTMLResponse)
 def assign_instrument_page(request: Request):
     return templates.TemplateResponse(request, "assign_instrument.html")
