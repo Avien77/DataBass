@@ -53,6 +53,55 @@ def add_student_list_page(request: Request):
         status_code=500
     )
 
+@router.post("/search-student")
+def search_student(
+    request: Request,
+    stud_fname: str | None = Form(None)
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    # default, fetch all
+    if not stud_fname:
+        try:
+            cursor.execute("SELECT * FROM Student")
+            students = cursor.fetchall()
+            success = True
+        except Exception as e:
+            error_message = str(e)
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
+    else:
+        try:
+            cursor.execute("SELECT * FROM Student WHERE Stud_FName LIKE %s", (f"%{stud_fname}%",))
+            students = cursor.fetchall()
+            success = True
+        except Exception as e:
+            error_message = str(e)
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
+
+
+    if success:
+        return templates.TemplateResponse(
+            request,
+            "student_list.html",
+            {"students": students}, # type: ignore
+            status_code=200
+        )
+    return templates.TemplateResponse(
+            request,
+            "student_list.html",
+            status_code=500
+    )
+
 @router.get("/add-student", response_class=HTMLResponse)
 def add_student_page(request: Request):
     return templates.TemplateResponse(request, "add_student.html")
