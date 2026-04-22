@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardians</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <main class="main-content">
+
+        <div class="card form-card">
+            <h2>Guardians</hd>
+
+            <form method="post" action="/search-guardians">
+                <input type="text" name="guard_fname" placeholder="Enter First Name">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    
+        {% if guardians %}
+        <div class="card">
+            <h3>Guardian List</h3>
+            <button type="submit"><a href="/add-guardian">Add Guardian</a></button>
+            <table>
+                <tr>
+                    <th>Guardian ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                </tr>
+
+                {% for g in guardians %}
+                <tr>
+                    <td>{{ g.Guardian_ID }}</td>
+                    <td>{{ g.Guardian_FName }}</td>
+                    <td>{{ g.Guardian_LName }}</td>
+                    <td>{{ g.Guardian_Phone }}</td>
+                    <td><a href="/edit-guardian/{{ g.Guardian_ID }}">Edit Guardian</a></td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+        {% else %}
+        <h1>Failed to fetch Guardians</h1>
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

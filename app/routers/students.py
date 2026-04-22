@@ -33,7 +33,6 @@ def add_student_list_page(request: Request):
     try:
         cursor.execute("SELECT * FROM STUDENT")
         students = cursor.fetchall()
-        print(students)
         success=True
     except Exception as e:
         error_message = str(e)
