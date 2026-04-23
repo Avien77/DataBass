@@ -8,18 +8,19 @@
 </head>
 <body>
     {% include 'sidebar.html' %}
-
     <main class="main-content">
         <div class="card form-card">
             <h2>Instrument Inventory</h2>
-            <form method="get" action="/instruments">
-                <input type="text" name="query" placeholder="Search by Instrument ID, type, brand, or status">
+            <form method="post" action="/search-instruments">
+                <input type="text" name="instrument_type" placeholder="Search by type, brand, or status">
                 <button type="submit">Search Instruments</button>
             </form>
         </div>
 
+        {% if instruments %}
         <div class="card">
             <h3>Instrument List</h3>
+            <button type="submit"><a href="/add-instrument">Add Instrument</a></button>
             <table>
                 <thead>
                     <tr>
@@ -28,27 +29,32 @@
                         <th>Brand</th>
                         <th>Asset ID</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% if instruments %}
-                        {% for instrument in instruments %}
-                        <tr>
-                            <td>{{ instrument.instrument_id }}</td>
-                            <td>{{ instrument.instrument_type }}</td>
-                            <td>{{ instrument.brand }}</td>
-                            <td>{{ instrument.asset_id }}</td>
-                            <td>{{ instrument.status }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No instruments to display.</td>
-                        </tr>
-                    {% endif %}
+                    {% for instrument in instruments %}
+                    <tr>
+                        <td>{{ instrument.Instrument_ID }}</td>
+                        <td>{{ instrument.Instrument_Type }}</td>
+                        <td>{{ instrument.Brand }}</td>
+                        <td>{{ instrument.Asset_ID }}</td>
+                        <td>{{ instrument.Status }}</td>
+                        <td>
+                            <table>
+                                <td><a href="/edit-instrument/{{ instrument.Instrument_ID }}">Edit</a></td>
+                                <td><a href="/delete-instrument/{{ instrument.Instrument_ID }}">Delete</a></td>
+                            </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% else %}
+        <h1>No Instruments Matching Search</h1>
+        <button title="Search Again"><a href="/instruments">Search again?</a></button>
+        {% endif %}
     </main>
 </body>
 </html>
