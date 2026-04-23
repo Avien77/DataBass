@@ -31,13 +31,13 @@
                             <th>Last Name</th>
                             <th>Action</th>
                         </tr>
-    
+
                         {% for s in students %}
                         <tr>
                             <td>{{ s.Stud_ID }}</td>
                             <td>{{ s.Stud_FName }}</td>
                             <td>{{ s.Stud_LName }}</td>
-                            <td><button>Select Student</button></td>
+                            <td><button type="button" onclick="document.querySelector('[name=stud_id]').value = '{{ s.Stud_ID }}'">Select</button></td>
                         </tr>
                         {% endfor %}
     
@@ -57,13 +57,13 @@
                             <th>Last Name</th>
                             <th>Action</th>
                         </tr>
-    
+
                         {% for g in guardians %}
                         <tr>
                             <td>{{ g.Guardian_ID }}</td>
                             <td>{{ g.Guardian_FName }}</td>
                             <td>{{ g.Guardian_LName }}</td>
-                            <td><button>Select Guardian</button></td>
+                            <td><button type="button" onclick="document.querySelector('[name=guard_id]').value = '{{ g.Guardian_ID }}'">Select</button></td>
                         </tr>
                         {% endfor %}
     
