@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <main class="main-content">
+        {% if student %}
+        <div class="card">
+            <h2>Welcome, {{ student.Stud_FName }}!</h2>
+        </div>
+        <div class="card">
+            <h3>Student Information</h3>
+            <table>
+                <tr>
+                    <th>Student ID</th>
+                    <td>{{ student.Stud_ID }}</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ student.Stud_FName }} {{ student.Stud_LName }}</td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td>{{ student.Stud_Phone }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ student.Stud_Email }}</td>
+                </tr>
+                <tr>
+                    <th>Gender</th>
+                    <td>{{ student.Stud_Gender }}</td>
+                </tr>
+                <tr>
+                    <th>Year</th>
+                    <td>{{ student.Year_ID }}</td>
+                </tr>
+                <tr>
+                    <th>Role</th>
+                    <!-- TODO: Add student role -->
+                    <td>{{ student.role }}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if guardians %}
+        <div class="card">
+            <h3>Guardians</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Guardian ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for guardian in guardians %}
+                    <tr>
+                        <td>{{ guardian.Guardian_ID }}</td>
+                        <td>{{ guardian.Guardian_FName }} {{ guardian.Guardian_LName }}</td>
+                        <td>{{ guardian.Guardian_Phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if uniform_rentals %}
+        <div class="card">
+            <h3>Uniform Rentals</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Uniform ID</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Condition</th>
+                        <th>End Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in uniform_rentals %}
+                    <tr>
+                        <td>{{ rental.Uniform_ID }}</td>
+                        <td>{{ rental.Unif_Rental_Start_Date }}</td>
+                        <td>{{ rental.Unif_Rental_End_Date }}</td>
+                        <td>{{ rental.Unif_Start_Condition }}</td>
+                        <td>{{ rental.Unif_End_Condition }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if instrument_rentals %}
+        <div class="card">
+            <h3>Instrument Rentals</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instrument ID</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Condition</th>
+                        <th>End Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rental in instrument_rentals %}
+                    <tr>
+                        <td>{{ rental.Instrument_ID }}</td>
+                        <td>{{ rental.Instr_Rental_Start_Date }}</td>
+                        <td>{{ rental.Instr_Rental_End_Date }}</td>
+                        <td>{{ rental.Instr_Start_Condition }}</td>
+                        <td>{{ rental.Instr_End_Condition }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </main>
+</body>
+
+</html>
