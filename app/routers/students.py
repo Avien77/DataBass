@@ -20,8 +20,8 @@ year_to_id = {
 
 id_to_year = {v: k for k, v in year_to_id.items()}
 
-@router.get("/student-list", response_class=HTMLResponse)
-def add_student_list_page(request: Request):
+@router.get("/students", response_class=HTMLResponse)
+def add_students_page(request: Request):
 
     # get connection/cursor
     conn = db.get_db_conn()
@@ -44,13 +44,13 @@ def add_student_list_page(request: Request):
     if success:
         return templates.TemplateResponse(
             request=request, 
-            name="student_list.html",
+            name="students.html",
             context={"students": students}, #type: ignore
             status_code=200
         )
     return templates.TemplateResponse(
         request=request,
-        name="student_list.html",
+        name="students.html",
         status_code=500
     )
 
@@ -93,13 +93,13 @@ def search_student(
     if success:
         return templates.TemplateResponse(
             request,
-            "student_list.html",
+            "students.html",
             {"students": students}, # type: ignore
             status_code=200
         )
     return templates.TemplateResponse(
             request,
-            "student_list.html",
+            "students.html",
             status_code=500
     )
 
@@ -142,7 +142,7 @@ def add_student_submit(
         conn.close()
 
     if success:
-        return RedirectResponse(url="/student-list", status_code=303)
+        return RedirectResponse(url="/students", status_code=303)
     return templates.TemplateResponse(
         request,
         "add_student.html",
@@ -163,7 +163,7 @@ def edit_student_page(request: Request, id: str):
         conn.close()
 
     if not student:
-        return RedirectResponse(url="/student-list", status_code=303)
+        return RedirectResponse(url="/students", status_code=303)
 
     student["Year_Name"] = id_to_year.get(student["Year_ID"], "")
     return templates.TemplateResponse(request, "add_student.html", {"student": student})
@@ -203,13 +203,35 @@ def edit_student_submit(
         conn.close()
 
     if success:
-        return RedirectResponse(url="/student-list", status_code=303)
+        return RedirectResponse(url="/students", status_code=303)
     return templates.TemplateResponse(
         request,
         "add_student.html",
         {"student": {"Stud_ID": id}, "error": f"Failed to update student: {error_message}"},
         status_code=500
     )
+
+@router.get("/delete-student/{id}")
+def delete_student(request: Request, id: str):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = ''
+
+    try:
+        cursor.execute("DELETE from Student WHERE Stud_ID = %s", (id,))
+        conn.commit()
+        success = True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+    
+    return RedirectResponse(url="/students", status_code=303)
+
 
 @router.get("/student-details", response_class=HTMLResponse)
 def student_details_page(request: Request, stud_id: str = ""):

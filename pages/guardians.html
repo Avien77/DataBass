@@ -30,6 +30,7 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Phone Number</th>
+                    <th>Actions</th>
                 </tr>
 
                 {% for g in guardians %}
@@ -38,14 +39,20 @@
                     <td>{{ g.Guardian_FName }}</td>
                     <td>{{ g.Guardian_LName }}</td>
                     <td>{{ g.Guardian_Phone }}</td>
-                    <td><a href="/edit-guardian/{{ g.Guardian_ID }}">Edit Guardian</a></td>
+                    <td>
+                        <table>
+                            <td><a href="/edit-guardian/{{ g.Guardian_ID }}">Edit</a></td>
+                            <td><a href="/delete-guardian/{{ g.Guardian_ID }}">Delete</a></td>
+                        </table>
+                    </td>
                 </tr>
                 {% endfor %}
 
             </table>
         </div>
         {% else %}
-        <h1>Failed to fetch Guardians</h1>
+        <h1>No Guardians Matching Search</h1>
+        <button title="Search Again"><a href="/guardians">Search again?</a></button>
         {% endif %}
 
     </main>

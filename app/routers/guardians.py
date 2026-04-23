@@ -127,16 +127,10 @@ def add_guardian_submit(
         conn.close()
 
     if success:
-        return templates.TemplateResponse(
-            request,
-            "add_guardian.html",
-            {"request": request, "message": f"Guardian {first_name} {last_name} added successfully"},
-            status_code=200
-        )
+        return RedirectResponse(url="/guardians", status_code=303)
     return templates.TemplateResponse(
         request,
         "add_guardian.html",
-        {"request": request, "error": f"Failed to add guardian: {error_message}"},
         status_code=500
     )
 
@@ -214,3 +208,27 @@ def link_guardian_submit(
             "message": f"Guardian {guard_id} linked to student {stud_id}"
         }
     )
+
+@router.get("/delete-guardian/{id}")
+def delete_guardian(request: Request, id: str):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = ""
+
+    try:
+        cursor.execute("DELETE from Guardian WHERE Guardian_ID = %s", (id,))
+        conn.commit()
+        success = True
+        print(success)
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+        print('fail')
+    finally:
+        cursor.close()
+        conn.close()
+
+    return RedirectResponse(url="/guardians", status_code=303)
+
