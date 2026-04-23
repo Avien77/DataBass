@@ -30,10 +30,10 @@ def guardian_page(request: Request):
     finally:
         cursor.close()
         conn.close()
-    
+
     if success:
         return templates.TemplateResponse(
-            request=request, 
+            request=request,
             name="guardians.html",
             context={"guardians": guardians}, #type: ignore
             status_code=200
@@ -190,24 +190,6 @@ def edit_guardian_submit(
         status_code=500
     )
 
-@router.get("/link-guardian", response_class=HTMLResponse)
-def link_guardian_page(request: Request):
-    return templates.TemplateResponse(request, "link_guardian.html")
-
-@router.post("/link-guardian", response_class=HTMLResponse)
-def link_guardian_submit(
-    request: Request,
-    stud_id: str = Form(...),
-    guard_id: str = Form(...)
-):
-    return templates.TemplateResponse(
-        request,
-        "link_guardian.html",
-        {
-            "request": request,
-            "message": f"Guardian {guard_id} linked to student {stud_id}"
-        }
-    )
 
 @router.get("/delete-guardian/{id}")
 def delete_guardian(request: Request, id: str):
@@ -231,4 +213,63 @@ def delete_guardian(request: Request, id: str):
         conn.close()
 
     return RedirectResponse(url="/guardians", status_code=303)
+
+@router.get("/link-guardian", response_class=HTMLResponse)
+def link_guardian_page(request: Request, message: str | None = None):
+
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM Student")
+        students = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM Guardian")
+        guardians = cursor.fetchall()
+
+        return templates.TemplateResponse(
+            request=request,
+            name="link_guardian.html",
+            context={"guardians": guardians, "students": students, "message": message},
+            status_code=200
+        )
+    except Exception as e:
+        conn.rollback()
+        return templates.TemplateResponse(
+            request=request,
+            name="link_guardian.html",
+            status_code=500
+        )
+    finally:
+        cursor.close()
+        conn.close()
+
+@router.post("/link-guardian", response_class=HTMLResponse)
+def link_guardian_submit(
+    request: Request,
+    stud_id: str = Form(...),
+    guard_id: str = Form(...)
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("insert into Student_Guardian (Stud_ID, Guardian_ID) VALUES " \
+        "(%s, %s)",
+        (stud_id, guard_id))   
+        conn.commit()
+        success=True
+    except Exception as e:
+        error_message = str(e)
+    finally:
+        cursor.close()
+        conn.close()
+    
+    if success:
+        return link_guardian_page(request, message=f"Guardian {guard_id} linked to student {stud_id}")
+    return link_guardian_page(request, message="Failed to link Guardian to Student")
+        
 
