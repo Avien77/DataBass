@@ -56,6 +56,12 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -67,6 +73,10 @@ td {
   text-align: left;
   padding: 12px;
   border-bottom: 1px solid #eee;
+}
+
+.scroll-container {
+  overflow-y: scroll;
 }
 
 .form-card form {
