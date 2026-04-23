@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataBass Login</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <main class="main-content">
+        <h1>DataBass Login</h1>
+
+        <div class="login-grid-container">
+            <div class="card">
+                <h3>I'm a student</h3>
+                <p> Check your rental status for instruments and uniforms.</p>
+                <form method="POST" action="/student_portal">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                    {% if error %}
+                    <p style="color:red; font-size:13px;">{{ error }}</p>
+                    {% endif %}
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>I'm a staff member</h3>
+                <p>View and manage uniform and instrument rental status by student ID. Enter staff password.</p>
+                <label for="staff-password">Password:</label>
+                <input type="password" id="staff-password" name="staff-password" placeholder="Enter staff password">
+                <p id="staff-error" style="color:red; font-size:13px; display:none;">Incorrect password.</p>
+                <button onclick="staffLogin()">Login</button>
+            </div>
+            <script>
+                function staffLogin() {
+                    const STAFF_PASSWORD = "12345"; // STAFF PASSWORD EXAMPLE
+                    const input = document.getElementById('staff-password').value;
+                    const error = document.getElementById('staff-error');
+
+                    if (input === STAFF_PASSWORD) {
+                        window.location.href = "/rental";
+                    } else {
+                        error.style.display = "block";
+                    }
+                }
+            </script>
+        </div>
+    </main>
+</body>
+
+</html>
