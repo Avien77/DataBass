@@ -11,67 +11,62 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
 
-@router.get("/assign-uniform", response_class=HTMLResponse)
-def assign_uniform_page(request: Request):
-    return templates.TemplateResponse(request, "assign_uniform.html")
-
-
-@router.post("/assign-uniform", response_class=HTMLResponse)
-def assign_uniform_submit(
-    request: Request,
-    stud_id: str = Form(...),
-    staff_id: str = Form(...),
-    uniform_type: str = Form(...),
-    uniform_id: str = Form(...),
-    start_condition: str = Form(...),
-    rental_start_date: str = Form(...)
-):
-    return templates.TemplateResponse(
-        request,
-        "assign_uniform.html",
-        {
-            "request": request,
-            "message": f"{uniform_type} {uniform_id} assigned to student {stud_id}"
-        }
-    )
-
-
-
 @router.get("/uniforms", response_class=HTMLResponse)
 def uniforms_page(request: Request, query: str = ""):
-    uniforms = [
-        {
-            "uniform_id": "U100",
-            "uniform_type": "Jacket",
-            "role": "Regular",
-            "size": "M",
-            "status": "With Student"
-        },
-        {
-            "uniform_id": "U101",
-            "uniform_type": "Pants",
-            "role": "Regular",
-            "size": "32",
-            "status": "On Shelf"
-        }
-    ]
 
-    if query:
-        q = query.lower()
-        uniforms = [
-            u for u in uniforms
-            if q in u["uniform_id"].lower()
-            or q in u["uniform_type"].lower()
-            or q in u["role"].lower()
-            or q in u["size"].lower()
-            or q in u["status"].lower()
-        ]
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("SELECT * FROM Uniform")
+        rows = cursor.fetchall()
+
+        uniforms = []
+        for row in rows:
+            uniform = {
+                "uniform_id": row["Uniform_ID"],
+                "uniform_type": "Standard",  # placeholder
+                "role": str(row["Role_ID"]) if row["Role_ID"] else "N/A",
+                "size": f"W{row['Uniform_Waist']}/I{row['Uniform_Inseam']}",
+                "status": "Available"  # placeholder
+            }
+            uniforms.append(uniform)
+
+        if query:
+            q = query.lower()
+            uniforms = [
+                u for u in uniforms
+                if q in str(u["uniform_id"]).lower()
+                or q in u["uniform_type"].lower()
+                or q in u["role"].lower()
+                or q in u["size"].lower()
+                or q in u["status"].lower()
+            ]
+
+        success = True
+
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return templates.TemplateResponse(
+            request=request,
+            name="uniforms.html",
+            context={"request": request, "uniforms": uniforms},
+            status_code=200
+        )
 
     return templates.TemplateResponse(
-        request,
-        "uniforms.html",
-        {
-            "request": request,
-            "uniforms": uniforms
-        }
+        request=request,
+        name="uniforms.html",
+        context={"request": request, "uniforms": [], "error": error_message},
+        status_code=500
     )
