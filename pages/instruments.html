@@ -12,7 +12,7 @@
         <div class="card form-card">
             <h2>Instrument Inventory</h2>
             <form method="post" action="/search-instruments">
-                <input type="text" name="instrument_type" placeholder="Search by type, brand, or status">
+                <input type="text" name="query" placeholder="Search by type, brand, or status">
                 <button type="submit">Search Instruments</button>
             </form>
         </div>
@@ -27,8 +27,6 @@
                         <th>Instrument ID</th>
                         <th>Type</th>
                         <th>Brand</th>
-                        <th>Asset ID</th>
-                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -37,9 +35,7 @@
                     <tr>
                         <td>{{ instrument.Instrument_ID }}</td>
                         <td>{{ instrument.Instrument_Type }}</td>
-                        <td>{{ instrument.Brand }}</td>
-                        <td>{{ instrument.Asset_ID }}</td>
-                        <td>{{ instrument.Status }}</td>
+                        <td>{{ instrument.Instrument_Brand }}</td>
                         <td>
                             <table>
                                 <td><a href="/edit-instrument/{{ instrument.Instrument_ID }}">Edit</a></td>

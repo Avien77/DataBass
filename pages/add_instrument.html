@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Instrument</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <main class="main-content">
+        <div class="card form-card">
+            <h2>{{ "Edit Instrument" if instrument else "Add Instrument" }}</h2>
+
+            {% if message %}
+            <p>{{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="{{ '/edit-instrument/' ~ instrument.instrument_id if instrument else '/add-instrument' }}">
+                <input type="text" name="instrument_id" placeholder="Instrument ID" value="{{ instrument.Instrument_ID if instrument else '' }}" {{ 'readonly' if instrument else ''}} required>
+                <input type="text" name="instrument_type" placeholder="Instrument Type" value="{{ instrument.Instrument_Type if instrument else '' }}" required>
+                <input type="text" name="instrument_brand" placeholder="Instrument Brand" value="{{ instrument.Instrument_Brand if instrument else '' }}" required>
+                <button type="submit">{{ 'Save Changes' if instrument else 'Add Instrument' }}</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

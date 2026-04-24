@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, APIRouter, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app import db
@@ -35,33 +35,11 @@ def assign_instrument_submit(
 
 @router.get("/instruments", response_class=HTMLResponse)
 def instruments_page(request: Request, query: str = ""):
-    instruments = [
-        {
-            "instrument_id": "I55",
-            "instrument_type": "Trumpet",
-            "brand": "Yamaha",
-            "asset_id": "A-1001",
-            "status": "With Student"
-        },
-        {
-            "instrument_id": "I56",
-            "instrument_type": "Flute",
-            "brand": "Pearl",
-            "asset_id": "A-1002",
-            "status": "On Shelf"
-        }
-    ]
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary = True)
 
-    if query:
-        q = query.lower()
-        instruments = [
-            i for i in instruments
-            if q in i["instrument_id"].lower()
-            or q in i["instrument_type"].lower()
-            or q in i["brand"].lower()
-            or q in i["asset_id"].lower()
-            or q in i["status"].lower()
-        ]
+    cursor.execute("select * from Instrument")
+    instruments = cursor.fetchall()
 
     return templates.TemplateResponse(
         request,
@@ -71,3 +49,95 @@ def instruments_page(request: Request, query: str = ""):
             "instruments": instruments
         }
     )
+
+@router.get("/add-instrument", response_class=HTMLResponse)
+def add_instrument_page(request: Request):
+    return templates.TemplateResponse(request, "add_instrument.html", {"request": request, "instrument": None})
+
+@router.post("/add-instrument", response_class=HTMLResponse)
+def add_instrument_submit(
+    request: Request,
+    instrument_id: str = Form(...),
+    instrument_type: str = Form(...),
+    instrument_brand: str = Form(...)
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute(
+            "INSERT INTO Instrument (Instrument_ID, Instrument_Type, Instrument_Brand) VALUES (%s, %s, %s)",
+            (instrument_id, instrument_type, instrument_brand)
+        )
+        conn.commit()
+        success = True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return RedirectResponse(url="/instruments", status_code=303)
+    
+    return templates.TemplateResponse(
+        request,
+        "add_instrument.html",
+        {
+            "request": request,
+            "message": f"Error adding instrument: {error_message}"
+        }
+    )
+
+@router.post("/search-instruments", response_class=HTMLResponse)
+def search_instruments(
+    request: Request, 
+    query: str | None = Form(None)
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    if not query:
+        try:
+            cursor.execute("SELECT * FROM Instrument")
+            instruments = cursor.fetchall()
+            success = True
+        except Exception as e:
+            error_message = str(e)
+            conn.rollback()
+        finally:    
+            cursor.close()
+            conn.close()
+    else:
+        try:
+            cursor.execute("SELECT * FROM Instrument WHERE Instrument_ID LIKE %s OR Instrument_Type LIKE %s OR Instrument_Brand LIKE %s",
+            (f"%{query}%", f"%{query}%", f"%{query}%"))
+            instruments = cursor.fetchall()
+            success = True
+        except Exception as e:
+            error_message = str(e)
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
+        
+    if success:
+        return templates.TemplateResponse(
+            request,
+            "instruments.html",
+            {"request": request, "instruments": instruments}, #type: ignore
+            status_code=200
+        )
+    return templates.TemplateResponse(
+            request,
+            "instruments.html",
+            status_code=500
+    )
+    
