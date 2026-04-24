@@ -203,11 +203,9 @@ def delete_guardian(request: Request, id: str):
         cursor.execute("DELETE from Guardian WHERE Guardian_ID = %s", (id,))
         conn.commit()
         success = True
-        print(success)
     except Exception as e:
         error_message = str(e)
         conn.rollback()
-        print('fail')
     finally:
         cursor.close()
         conn.close()
