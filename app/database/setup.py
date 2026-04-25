@@ -29,7 +29,8 @@ def init_db():
         tables = {
             "Student": "CREATE TABLE IF NOT EXISTS Student (Stud_ID INT PRIMARY KEY, Stud_FName VARCHAR(50), Stud_LName VARCHAR(50), Stud_Phone VARCHAR(15), Year_ID INT, Stud_Gender VARCHAR(10), Stud_Email VARCHAR(100))",
             "Uniform": "CREATE TABLE IF NOT EXISTS Uniform (Uniform_ID INT PRIMARY KEY, Role_ID INT, Uniform_Chest DECIMAL(5,2), Uniform_Arms DECIMAL(5,2), Uniform_Hips DECIMAL(5,2),Uniform_Waist DECIMAL(5,2), Uniform_Inseam DECIMAL(5,2), Uniform_Gloves VARCHAR(10))",
-            "Instrument": "CREATE TABLE IF NOT EXISTS Instrument (Instrument_ID INT PRIMARY KEY, Instrument_Type VARCHAR(50), UNIQUE (Instrument_Type))",
+            "Instrument": "CREATE TABLE IF NOT EXISTS Instrument (Instrument_ID INT PRIMARY KEY, Instrument_Type INT, UNIQUE (Instrument_Type))",
+            "Instrument_Types": "CREATE TABLE IF NOT EXISTS Instrument_Types (Instr_Type_ID INT PRIMARY KEY AUTO_INCREMENT, Instr_Type_Name VARCHAR(50), UNIQUE (Instr_Type_Name))",
             "Role": "CREATE TABLE IF NOT EXISTS Role (Role_ID INT PRIMARY KEY, Role_Name VARCHAR(50), UNIQUE (Role_Name))",
             "Guardian": "CREATE TABLE IF NOT EXISTS Guardian (Guardian_ID INT PRIMARY KEY, Guardian_FName VARCHAR(50), Guardian_LName VARCHAR(50), Guardian_Phone VARCHAR(15))",
             "Student_Role": "CREATE TABLE IF NOT EXISTS Student_Role (Stud_ID INT, Role_ID INT, PRIMARY KEY (Stud_ID, Role_ID), FOREIGN KEY (Stud_ID) REFERENCES Student(Stud_ID), FOREIGN KEY (Role_ID) REFERENCES Role(Role_ID))",
