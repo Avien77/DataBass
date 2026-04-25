@@ -20,6 +20,29 @@
             </form>
         </div>
 
+        <div class="card">
+            <h3>Instrument Rentals</h3>
+            
+            <table>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Instrument ID</th>
+                    <th>Rental Start Date</th>
+                    <th>Rental End Date</th>
+                </tr>
+                {% for r in instrument_rentals %}
+                <tr>
+                    <td>{{ r.Stud_FName }} {{ r.Stud_LName }}</td>
+                    <td>{{ r.Instr_Type_Name }}</td>
+                    <td>{{ r.Instr_Rental_Start_Date }}</td>
+                    <td>{{ r.Instr_Rental_End_Date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            
+        </div>
+
         {% if rentals %}
         <div class="card">
             <h3>Rental Results</h3>

@@ -10,37 +10,42 @@ app = FastAPI(title="DataBass")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
-# TODO: 
 @router.get("/rental", response_class=HTMLResponse)
 def rental_page(request: Request):
-    return templates.TemplateResponse(request, "rental.html")
+
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch instrument Rentals
+    try:
+        query = "SELECT * " \
+        "FROM Student_Instrument_Rentals r " \
+        "join Student s on r.Stud_ID = s.Stud_ID " \
+        "join Instrument i on r.Instrument_ID = i.Instrument_ID " \
+        "join Instrument_Types t on i.Instrument_Type = t.Instr_Type_ID" 
+        cursor.execute(query)
+        instrument_rentals = cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching instrument rentals: {e}")
+        instrument_rentals = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return templates.TemplateResponse(
+        request, 
+        "rental.html", 
+        {"request": request, "instrument_rentals": instrument_rentals}
+    )
 
 
 @router.post("/rental", response_class=HTMLResponse)
 def rental_lookup(request: Request, stud_id: str = Form(...)):
-    # TODO: Remove Hardcoded values
-    rentals = [
-        {
-            "item_type": "Uniform",
-            "item_id": "U100",
-            "status": "With Student",
-            "start_date": "2026-03-01",
-            "end_date": ""
-        },
-        {
-            "item_type": "Instrument",
-            "item_id": "I55",
-            "status": "Returned",
-            "start_date": "2025-10-01",
-            "end_date": "2026-01-10"
-        }
-    ]
 
     return templates.TemplateResponse(
         request,
         "rental.html",
         {
             "request": request,
-            "rentals": rentals
         }
     )

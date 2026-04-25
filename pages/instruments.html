@@ -17,10 +17,12 @@
             </form>
         </div>
 
-        {% if instruments %}
         <div class="card">
             <h3>Instrument List</h3>
-            <button type="submit"><a href="/add-instrument">Add Instrument</a></button>
+            <form method = "get" action="/add-instrument"><button type="submit">Add Instrument</button></form>
+            
+
+            {% if instruments %}
             <table>
                 <thead>
                     <tr>
@@ -34,12 +36,13 @@
                     {% for instrument in instruments %}
                     <tr>
                         <td>{{ instrument.Instrument_ID }}</td>
-                        <td>{{ instrument.Instrument_Type }}</td>
+                        <td>{{ instrument.Instr_Type_Name }}</td>
                         <td>{{ instrument.Instrument_Brand }}</td>
                         <td>
                             <table>
-                                <td><a href="/edit-instrument/{{ instrument.Instrument_ID }}">Edit</a></td>
-                                <td><a href="/delete-instrument/{{ instrument.Instrument_ID }}">Delete</a></td>
+                                <td><form method="get" action="/edit-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Edit</button></form></td>
+                                <td><form method="get" action="/delete-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Delete</button></form></td>
+                                <td><form method="get" action="/assign-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Assign</button></form></td>
                             </table>
                         </td>
                     </tr>

@@ -10,30 +10,25 @@
     {% include 'sidebar.html' %}
 
     <main class="main-content">
-        <div class="card form-card">
-            <h2>Assign Instrument</h2>
 
-            {% if message %}
-            <p>{{ message }}</p>
-            {% endif %}
+        <h2>Who would you like to assign this instrument to?</h2>
 
-            <form method="post" action="/assign-instrument">
-                <input type="text" name="stud_id" placeholder="Student ID" required>
-                <input type="text" name="staff_id" placeholder="Staff ID" required>
-                <input type="text" name="instrument_id" placeholder="Instrument ID / Asset ID" required>
-
-                <select title="Start Condition" name="start_condition" required>
-                    <option value="">Start Condition</option>
-                    <option value="Excellent">Excellent</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Poor">Poor</option>
-                </select>
-
-                <input title="Date" type="date" name="rental_start_date" required>
-                <button type="submit">Assign Instrument</button>
-            </form>
-        </div>
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.Stud_ID }}</td>
+                <td>{{ student.Stud_FName }} {{ student.Stud_LName }}</td>
+                <td>{{ student.Year_ID }}</td>
+                <td><form method="post" action="/assign-instrument/{{ instrument_id }}/{{ student.Stud_ID }}"><button type="submit">Assign</button></form></td>
+            </tr>
+            {% endfor %}
+        </table>
 
         <div class="card">
             <h3>Rules to Check</h3>

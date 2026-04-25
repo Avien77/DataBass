@@ -19,7 +19,16 @@
 
             <form method="post" action="{{ '/edit-instrument/' ~ instrument.instrument_id if instrument else '/add-instrument' }}">
                 <input type="text" name="instrument_id" placeholder="Instrument ID" value="{{ instrument.Instrument_ID if instrument else '' }}" {{ 'readonly' if instrument else ''}} required>
-                <input type="text" name="instrument_type" placeholder="Instrument Type" value="{{ instrument.Instrument_Type if instrument else '' }}" required>
+                
+                <select title="Instrument Type" name="instrument_type" required>
+                    <option value="">Select Instrument Type</option>
+                    {% for instrument_type in instrument_types %}
+                    <option value="{{ instrument_type.Instr_Type_ID }}" {{ 'selected' if instrument and instrument.Instr_Type_Name == instrument_type.Instr_Type_Name else '' }}>
+                        {{ instrument_type.Instr_Type_Name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                
                 <input type="text" name="instrument_brand" placeholder="Instrument Brand" value="{{ instrument.Instrument_Brand if instrument else '' }}" required>
                 <button type="submit">{{ 'Save Changes' if instrument else 'Add Instrument' }}</button>
             </form>

@@ -10,35 +10,14 @@ app = FastAPI(title="DataBass")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
 
-@router.get("/assign-instrument", response_class=HTMLResponse)
-def assign_instrument_page(request: Request):
-    return templates.TemplateResponse(request, "assign_instrument.html")
-
-
-@router.post("/assign-instrument", response_class=HTMLResponse)
-def assign_instrument_submit(
-    request: Request,
-    stud_id: str = Form(...),
-    staff_id: str = Form(...),
-    instrument_id: str = Form(...),
-    start_condition: str = Form(...),
-    rental_start_date: str = Form(...)
-):
-    return templates.TemplateResponse(
-        request,
-        "assign_instrument.html",
-        {
-            "request": request,
-            "message": f"Instrument {instrument_id} assigned to student {stud_id}"
-        }
-    )
-
 @router.get("/instruments", response_class=HTMLResponse)
 def instruments_page(request: Request, query: str = ""):
     conn = db.get_db_conn()
     cursor = conn.cursor(dictionary = True)
 
-    cursor.execute("select * from Instrument")
+    cursor.execute("select * " \
+    "from Instrument i " \
+    "inner join Instrument_Types t on i.Instrument_Type = t.Instr_Type_ID ")
     instruments = cursor.fetchall()
 
     return templates.TemplateResponse(
@@ -52,7 +31,18 @@ def instruments_page(request: Request, query: str = ""):
 
 @router.get("/add-instrument", response_class=HTMLResponse)
 def add_instrument_page(request: Request):
-    return templates.TemplateResponse(request, "add_instrument.html", {"request": request, "instrument": None})
+
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("select * from Instrument_Types")
+        instrument_types = cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+    
+    return templates.TemplateResponse(request, "add_instrument.html", {"request": request, "instrument": None, "instrument_types": instrument_types})
 
 @router.post("/add-instrument", response_class=HTMLResponse)
 def add_instrument_submit(
@@ -106,7 +96,8 @@ def search_instruments(
 
     if not query:
         try:
-            cursor.execute("SELECT * FROM Instrument")
+            cursor.execute("select * from " \
+            "Instrument i inner join Instrument_Types t on i.Instrument_Type = t.Instr_Type_ID")
             instruments = cursor.fetchall()
             success = True
         except Exception as e:
@@ -117,7 +108,9 @@ def search_instruments(
             conn.close()
     else:
         try:
-            cursor.execute("SELECT * FROM Instrument WHERE Instrument_ID LIKE %s OR Instrument_Type LIKE %s OR Instrument_Brand LIKE %s",
+            cursor.execute("SELECT * FROM " \
+            "Instrument i inner join Instrument_Types t on i.Instrument_Type = t.Instr_Type_ID " \
+            "WHERE i.Instrument_ID LIKE %s OR t.Instr_Type_Name LIKE %s OR i.Instrument_Brand LIKE %s",
             (f"%{query}%", f"%{query}%", f"%{query}%"))
             instruments = cursor.fetchall()
             success = True
@@ -219,4 +212,75 @@ def delete_instrument(instrument_id: str):
         conn.close()
 
     return RedirectResponse(url="/instruments", status_code=303)
+
+
+@router.get("/assign-instrument/{instrument_id}", response_class=HTMLResponse)
+def assign_instrument_page(request: Request, instrument_id: str):
+
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("select * from Student")
+        students = cursor.fetchall()
+        success = True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
     
+    return templates.TemplateResponse(
+        request, 
+        "assign_instrument.html", 
+        {
+            "request": request, 
+            "students": students if success else [], #type: ignore
+            "instrument_id": instrument_id,
+            "message": f"Error loading students: {error_message}" if not success else None,
+        }
+    )
+
+
+@router.post("/assign-instrument/{instrument_id}/{stud_id}", response_class=HTMLResponse)
+def assign_instrument_submit(
+    request: Request,
+    instrument_id: str,
+    stud_id: str,
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute(
+            "insert into Student_Instrument_Rentals (Stud_ID, Instrument_ID, Instr_Rental_Start_Date) " \
+            "values (%s, %s, CURDATE())",
+            (stud_id, instrument_id)
+        )
+        conn.commit()
+        success = True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return RedirectResponse(url="/instruments", status_code=303)
+
+    return templates.TemplateResponse(
+        request,
+        "assign_instrument.html",
+        {
+            "request": request,
+            "message": f"Error assigning instrument: {error_message}"
+        }
+    )
