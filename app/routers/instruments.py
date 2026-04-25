@@ -274,7 +274,7 @@ def assign_instrument_submit(
         conn.close()
 
     if success:
-        return RedirectResponse(url="/instruments", status_code=303)
+        return RedirectResponse(url="/rental", status_code=303)
 
     return templates.TemplateResponse(
         request,
