@@ -169,6 +169,9 @@ def add_uniform(request: Request,
     except Exception as e:
         error_message = str(e)
         conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
 
     if success:
         return RedirectResponse(url="/uniforms", status_code=303)
