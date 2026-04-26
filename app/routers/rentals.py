@@ -100,3 +100,25 @@ def return_instrument(instrument_id: str):
         conn.close()
 
     return RedirectResponse(url="/rental", status_code=303)
+
+@router.get("/return-uniform/{uniform_id}")
+def return_uniform(uniform_id: str):
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "UPDATE Student_Uniform_Rentals "
+            "SET Unif_Rental_End_Date = CURDATE() "
+            "WHERE Uniform_ID = %s AND Unif_Rental_End_Date IS NULL",
+            (uniform_id,)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error returning uniform: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return RedirectResponse(url="/rental", status_code=303)

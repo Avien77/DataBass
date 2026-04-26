@@ -32,7 +32,7 @@
                     <th>Instrument Type</th>
                     <th>Rental Start Date</th>
                     <th>Rental End Date</th>
-                    <th>Action</th>
+                    <th>Return</th>
                 </tr>
                 {% for r in instrument_rentals %}
                 <tr>
@@ -46,6 +46,8 @@
                         <form method="get" action="/return-instrument/{{ r.Instrument_ID }}">
                             <button type="submit">Return</button>
                         </form>
+                        {% else %}
+                        <p>Returned</p>
                         {% endif %}
                     </td>
                 </tr>
@@ -63,6 +65,7 @@
                     <th>Uniform Type</th>
                     <th>Rental Start Date</th>
                     <th>Rental End Date</th>
+                    <th>Return</th>
                 </tr>
                 {% for r in uniform_rentals %}
                 <tr>
@@ -70,7 +73,16 @@
                     <td>{{ r.Stud_FName }} {{ r.Stud_LName }}</td>
                     <td>{{ r.Role_Name }}</td>
                     <td>{{ r.Unif_Rental_Start_Date }}</td>
-                    <td>{{ r.Unif_Rental_End_Date }}</td>
+                    <td>{{ r.Unif_Rental_End_Date if r.Unif_Rental_End_Date else "Active" }}</td>
+                    <td>
+                        {% if not r.Unif_Rental_End_Date %}
+                        <form method="get" action="/return-uniform/{{ r.Uniform_ID }}">
+                            <button type="submit">Return</button>
+                        </form>
+                        {% else %}
+                        <p>Returned</p>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
