@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
+
 <body>
     {% include 'sidebar.html' %}
 
@@ -22,25 +24,33 @@
 
         <div class="card">
             <h3>Instrument Rentals</h3>
-            
+
             <table>
                 <tr>
-                    <th>Student ID</th>
-                    <th>Instrument ID</th>
+                    <th>Student</th>
+                    <th>Instrument Type</th>
                     <th>Rental Start Date</th>
                     <th>Rental End Date</th>
+                    <th>Action</th>
                 </tr>
                 {% for r in instrument_rentals %}
                 <tr>
                     <td>{{ r.Stud_FName }} {{ r.Stud_LName }}</td>
                     <td>{{ r.Instr_Type_Name }}</td>
                     <td>{{ r.Instr_Rental_Start_Date }}</td>
-                    <td>{{ r.Instr_Rental_End_Date }}</td>
+                    <td>{{ r.Instr_Rental_End_Date if r.Instr_Rental_End_Date else "Active" }}</td>
+                    <td>
+                        {% if not r.Instr_Rental_End_Date %}
+                        <form method="get" action="/return-instrument/{{ r.Instrument_ID }}">
+                            <button type="submit">Return</button>
+                        </form>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
 
-            
+
         </div>
 
         {% if rentals %}
@@ -68,4 +78,5 @@
     </main>
 
 </body>
+
 </html>

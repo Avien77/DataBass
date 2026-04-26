@@ -18,7 +18,7 @@
             {% endif %}
 
             <form method="post" action="{{ '/edit-instrument/' ~ instrument.instrument_id if instrument else '/add-instrument' }}">
-                <input type="text" name="instrument_id" placeholder="Instrument ID" value="{{ instrument.Instrument_ID if instrument else '' }}" {{ 'readonly' if instrument else ''}} required>
+    
                 
                 <select title="Instrument Type" name="instrument_type" required>
                     <option value="">Select Instrument Type</option>
@@ -29,7 +29,7 @@
                     {% endfor %}
                 </select>
                 
-                <input type="text" name="instrument_brand" placeholder="Instrument Brand" value="{{ instrument.Instrument_Brand if instrument else '' }}" required>
+                
                 <button type="submit">{{ 'Save Changes' if instrument else 'Add Instrument' }}</button>
             </form>
         </div>

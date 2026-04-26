@@ -12,15 +12,14 @@
         <div class="card form-card">
             <h2>Instrument Inventory</h2>
             <form method="post" action="/search-instruments">
-                <input type="text" name="query" placeholder="Search by type, brand, or status">
+                <input type="text" name="query" placeholder="Search by ID or type">
                 <button type="submit">Search Instruments</button>
             </form>
         </div>
 
         <div class="card">
             <h3>Instrument List</h3>
-            <form method = "get" action="/add-instrument"><button type="submit">Add Instrument</button></form>
-            
+            <form method="get" action="/add-instrument"><button type="submit">Add Instrument</button></form>
 
             {% if instruments %}
             <table>
@@ -28,7 +27,6 @@
                     <tr>
                         <th>Instrument ID</th>
                         <th>Type</th>
-                        <th>Brand</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -37,7 +35,6 @@
                     <tr>
                         <td>{{ instrument.Instrument_ID }}</td>
                         <td>{{ instrument.Instr_Type_Name }}</td>
-                        <td>{{ instrument.Instrument_Brand }}</td>
                         <td>
                             <table>
                                 <td><form method="get" action="/edit-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Edit</button></form></td>
@@ -49,11 +46,11 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <p>No instruments matching search.</p>
+            <a href="/instruments">Search again?</a>
+            {% endif %}
         </div>
-        {% else %}
-        <h1>No Instruments Matching Search</h1>
-        <button title="Search Again"><a href="/instruments">Search again?</a></button>
-        {% endif %}
     </main>
 </body>
 </html>

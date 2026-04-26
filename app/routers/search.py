@@ -15,7 +15,59 @@ def search_page(request: Request, category: str = "", query: str = ""):
     headers = []
     results = []
 
-    if category == "students":
+    if category == "rentals":
+        conn = db.get_db_conn()
+        cursor = conn.cursor(dictionary=True)
+
+        try:
+            headers = ["Student ID", "Student Name", "Instrument Type", "Start Date", "End Date", "Start Condition", "End Condition", "Status"]
+
+            if query:
+                cursor.execute(
+                    "SELECT r.Stud_ID, s.Stud_FName, s.Stud_LName, t.Instr_Type_Name, "
+                    "r.Instr_Rental_Start_Date, r.Instr_Rental_End_Date, "
+                    "r.Instr_Start_Condition, r.Instr_End_Condition "
+                    "FROM Student_Instrument_Rentals r "
+                    "JOIN Student s ON r.Stud_ID = s.Stud_ID "
+                    "JOIN Instrument i ON r.Instrument_ID = i.Instrument_ID "
+                    "JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
+                    "WHERE CAST(r.Stud_ID AS CHAR) LIKE %s "
+                    "OR s.Stud_FName LIKE %s OR s.Stud_LName LIKE %s "
+                    "OR t.Instr_Type_Name LIKE %s",
+                    (f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%")
+                )
+            else:
+                cursor.execute(
+                    "SELECT r.Stud_ID, s.Stud_FName, s.Stud_LName, t.Instr_Type_Name, "
+                    "r.Instr_Rental_Start_Date, r.Instr_Rental_End_Date, "
+                    "r.Instr_Start_Condition, r.Instr_End_Condition "
+                    "FROM Student_Instrument_Rentals r "
+                    "JOIN Student s ON r.Stud_ID = s.Stud_ID "
+                    "JOIN Instrument i ON r.Instrument_ID = i.Instrument_ID "
+                    "JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID"
+                )
+
+            rows = cursor.fetchall()
+            results = [
+                [
+                    row["Stud_ID"],
+                    f"{row['Stud_FName']} {row['Stud_LName']}",
+                    row["Instr_Type_Name"],
+                    row["Instr_Rental_Start_Date"],
+                    row["Instr_Rental_End_Date"] or "—",
+                    row["Instr_Start_Condition"] or "—",
+                    row["Instr_End_Condition"] or "—",
+                    "Active" if not row["Instr_Rental_End_Date"] else "Returned"
+                ]
+                for row in rows
+            ]
+        except Exception as e:
+            print(f"Search error: {e}")
+        finally:
+            cursor.close()
+            conn.close()
+
+    elif category == "students":
         headers = ["Student ID", "First Name", "Last Name", "Year", "Role"]
         results = [
             ["S100", "Nate", "Oberdier", "Junior", "Regular"],
@@ -34,19 +86,57 @@ def search_page(request: Request, category: str = "", query: str = ""):
             ["U101", "Pants", "Regular", "32", "On Shelf"]
         ]
     elif category == "instruments":
-        headers = ["Instrument ID", "Type", "Brand", "Asset ID", "Status"]
-        results = [
-            ["I55", "Trumpet", "Yamaha", "A-1001", "With Student"],
-            ["I56", "Flute", "Pearl", "A-1002", "On Shelf"]
-        ]
-    elif category == "rentals":
-        headers = ["Student ID", "Item Type", "Item ID", "Status"]
-        results = [
-            ["S100", "Uniform", "U100", "With Student"],
-            ["S100", "Instrument", "I55", "Returned"]
-        ]
+        conn = db.get_db_conn()
+        cursor = conn.cursor(dictionary=True)
 
-    if query and results:
+        try:
+            headers = ["Instrument ID", "Type", "Rented To", "Student ID", "Rented Out Date", "Return Date", "Status"]
+
+            if query:
+                cursor.execute(
+                    "SELECT i.Instrument_ID, t.Instr_Type_Name, "
+                    "s.Stud_ID, s.Stud_FName, s.Stud_LName, "
+                    "r.Instr_Rental_Start_Date, r.Instr_Rental_End_Date "
+                    "FROM Instrument i "
+                    "JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
+                    "LEFT JOIN Student_Instrument_Rentals r ON i.Instrument_ID = r.Instrument_ID "
+                    "LEFT JOIN Student s ON r.Stud_ID = s.Stud_ID "
+                    "WHERE CAST(i.Instrument_ID AS CHAR) LIKE %s OR t.Instr_Type_Name LIKE %s "
+                    "OR s.Stud_FName LIKE %s OR s.Stud_LName LIKE %s",
+                    (f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%")
+                )
+            else:
+                cursor.execute(
+                    "SELECT i.Instrument_ID, t.Instr_Type_Name, "
+                    "s.Stud_ID, s.Stud_FName, s.Stud_LName, "
+                    "r.Instr_Rental_Start_Date, r.Instr_Rental_End_Date "
+                    "FROM Instrument i "
+                    "JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
+                    "LEFT JOIN Student_Instrument_Rentals r ON i.Instrument_ID = r.Instrument_ID "
+                    "LEFT JOIN Student s ON r.Stud_ID = s.Stud_ID"
+                )
+
+            rows = cursor.fetchall()
+            results = [
+                [
+                    row["Instrument_ID"],
+                    row["Instr_Type_Name"],
+                    f"{row['Stud_FName']} {row['Stud_LName']}" if row["Stud_ID"] else "—",
+                    row["Stud_ID"] or "—",
+                    row["Instr_Rental_Start_Date"] or "—",
+                    row["Instr_Rental_End_Date"] or "—",
+                    "Active" if row["Stud_ID"] and not row["Instr_Rental_End_Date"] else ("Returned" if row["Instr_Rental_End_Date"] else "Never Rented")
+                ]
+                for row in rows
+            ]
+        except Exception as e:
+            print(f"Search error: {e}")
+        finally:
+            cursor.close()
+            conn.close()
+
+            
+    if query and results and category != "rentals":
         q = query.lower()
         results = [
             row for row in results
