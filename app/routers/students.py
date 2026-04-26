@@ -31,7 +31,15 @@ def add_students_page(request: Request):
     error_message = None
 
     try:
-        cursor.execute("SELECT * FROM STUDENT")
+        cursor.execute("SELECT *, " \
+        "CASE " \
+        "WHEN Year_ID = 1 THEN 'Freshman' " \
+        "WHEN Year_ID = 2 THEN 'Sophomore' " \
+        "WHEN Year_ID = 3 THEN 'Junior' " \
+        "WHEN Year_ID = 4 THEN 'Senior' " \
+        "ELSE 'Graduated' " \
+        "END AS Year_Name " \
+        "FROM STUDENT")
         students = cursor.fetchall()
         success=True
     except Exception as e:
@@ -111,7 +119,6 @@ def add_student_page(request: Request):
 @router.post("/add-student")
 def add_student_submit(
     request: Request,
-    stud_id: str = Form(...),
     first_name: str = Form(...),
     last_name: str = Form(...),
     phone: str = Form(""),
@@ -128,9 +135,9 @@ def add_student_submit(
     yearId = year_to_id[student_year]
 
     try:
-        cursor.execute("INSERT INTO Student (Stud_ID, Stud_FName, Stud_LName, Stud_Phone, Year_ID, Stud_Gender, Stud_Email) " \
-        "VALUES (%s, %s, %s, %s, %s, %s, %s)", 
-        (stud_id, first_name, last_name, phone, yearId, gender, email))
+        cursor.execute("INSERT INTO Student (Stud_FName, Stud_LName, Stud_Phone, Year_ID, Stud_Gender, Stud_Email) " \
+        "VALUES (%s, %s, %s, %s, %s, %s)", 
+        (first_name, last_name, phone, yearId, gender, email))
         conn.commit()
         success = True
     except Exception as e:

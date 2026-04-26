@@ -42,13 +42,13 @@
                     <td>{{ s.Stud_FName }}</td>
                     <td>{{ s.Stud_LName }}</td>
                     <td>{{ s.Stud_Phone }}</td>
-                    <td>{{ s.Year_ID }}</td>
+                    <td>{{ s.Year_Name }}</td>
                     <td>{{ s.Stud_Gender }}</td>
                     <td>{{ s.Stud_Email }}</td>
                     <td>
                         <table>
-                            <td><a href="/edit-student/{{ s.Stud_ID }}">Edit</a></td>
-                            <td><a href="/delete-student/{{ s.Stud_ID }}">Delete</a></td>
+                            <td><form method="get" action="/edit-student/{{ s.Stud_ID }}"><button type="submit">Edit</button></form></td>
+                            <td><form method="get" action="/delete-student/{{ s.Stud_ID }}"><button type="submit">Delete</button></form></td>
                         </table>
                     </td>
                 </tr>

@@ -19,7 +19,6 @@
             {% endif %}
 
             <form method="post" action="{{ '/edit-student/' ~ student.Stud_ID if student else '/add-student' }}">
-                <input type="text" name="stud_id" placeholder="Student ID" value="{{ student.Stud_ID if student else '' }}" {{ 'readonly' if student else '' }} required>
                 <input type="text" name="first_name" placeholder="First Name" value="{{ student.Stud_FName if student else '' }}" required>
                 <input type="text" name="last_name" placeholder="Last Name" value="{{ student.Stud_LName if student else '' }}" required>
                 <input type="text" name="phone" placeholder="Phone Number" value="{{ student.Stud_Phone if student else '' }}">
