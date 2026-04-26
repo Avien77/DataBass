@@ -12,33 +12,77 @@
     <main class="main-content">
         <div class="card form-card">
             <h2>Uniform Inventory</h2>
-            <form method="get" action="/uniforms">
-                <input type="text" name="query" placeholder="Search by Uniform ID, type, size, or status">
+
+            {% if message %}
+            <p class="message">{{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="/uniforms">
+                <h3>Enter Student Measurements</h3>
+                <select title="Role" name="role_id" required>
+                    <option value="" disabled selected>Select Role</option>
+                    {% for role in roles %}
+                    <option value="{{ role.Role_ID }}">{{ role.Role_Name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="chest" placeholder="Chest" step="0.01" required>
+                <input type="number" name="arms" placeholder="Arms" step="0.01" required>
+                <input type="number" name="hips" placeholder="Hips" step="0.01" required>
+                <input type="number" name="waist" placeholder="Waist" step="0.01" required>
+                <input type="number" name="inseam" placeholder="Inseam" step="0.01" required>
+                <select title="Gloves" name="gloves" required>
+                    <option value="" disabled selected>Select Gloves</option>
+                    <option value="None">No Gloves</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </select>
+
                 <button type="submit">Search Uniforms</button>
             </form>
-        </div>
 
+        </div>
+        
         <div class="card">
             <h3>Uniform List</h3>
+            <form method="get" action="/add-uniform">
+                <button type="submit">Add Uniform</button>
+            </form>
             <table>
                 <thead>
                     <tr>
                         <th>Uniform ID</th>
-                        <th>Type</th>
                         <th>Role</th>
-                        <th>Size</th>
-                        <th>Status</th>
+                        <th>Chest</th>
+                        <th>Arms</th>
+                        <th>Hips</th>
+                        <th>Waist</th>
+                        <th>Inseam</th>
+                        <th>Gloves</th>
+                        {% if uniforms and uniforms[0].difference is defined %}
+                            <th>Fit Difference</th>
+                            <th>Actions</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% if uniforms %}
                         {% for uniform in uniforms %}
                         <tr>
-                            <td>{{ uniform.uniform_id }}</td>
-                            <td>{{ uniform.uniform_type }}</td>
-                            <td>{{ uniform.role }}</td>
-                            <td>{{ uniform.size }}</td>
-                            <td>{{ uniform.status }}</td>
+                            <td>{{ uniform.Uniform_ID }}</td>
+                            <td>{{ uniform.Role_Name }}</td>
+                            <td>{{ uniform.Uniform_Chest }}</td>
+                            <td>{{ uniform.Uniform_Arms }}</td>
+                            <td>{{ uniform.Uniform_Hips }}</td>
+                            <td>{{ uniform.Uniform_Waist }}</td>
+                            <td>{{ uniform.Uniform_Inseam }}</td>
+                            <td>{{ uniform.Uniform_Gloves }}</td>
+                            {% if uniform.difference is defined %}
+                                <td>{{ uniform.difference }}</td>
+                                <td><form method="get" action="/assign-uniform/{{ uniform.Uniform_ID }}">
+                                    <button type="submit">Assign Uniform</button>
+                                </form></td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     {% else %}

@@ -10,39 +10,24 @@
     {% include 'sidebar.html' %}
 
     <main class="main-content">
-        <div class="card form-card">
-            <h2>Assign Uniform</h2>
+        <h2>Who would you like to assign this Uniform to?</h2>
 
-            {% if message %}
-            <p>{{ message }}</p>
-            {% endif %}
-
-            <form method="post" action="/assign-uniform">
-                <input type="text" name="stud_id" placeholder="Student ID" required>
-                <input type="text" name="staff_id" placeholder="Staff ID" required>
-
-                <select title="Uniform Type" name="uniform_type" required>
-                    <option value="">Select Uniform Type</option>
-                    <option value="Jacket">Jacket</option>
-                    <option value="Pants">Pants</option>
-                    <option value="Gloves">Gloves</option>
-                </select>
-
-                <input type="text" name="uniform_id" placeholder="Uniform ID / Barcode" required>
-
-                <select title="Start Condition" name="start_condition" required>
-                    <option value="">Start Condition</option>
-                    <option value="Excellent">Excellent</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Poor">Poor</option>
-                </select>
-
-                <input title="Date" type="date" name="rental_start_date" required>
-
-                <button type="submit">Assign Uniform</button>
-            </form>
-        </div>
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.Stud_ID }}</td>
+                <td>{{ student.Stud_FName }} {{ student.Stud_LName }}</td>
+                <td>{{ student.Year_ID }}</td>
+                <td><form method="post" action="/assign-uniform/{{ uniform_id }}/{{ student.Stud_ID }}"><button type="submit">Assign</button></form></td>
+            </tr>
+            {% endfor %}
+        </table>
 
         <div class="card">
             <h3>Rules to Check</h3>
@@ -52,20 +37,16 @@
                     <th>Meaning</th>
                 </tr>
                 <tr>
-                    <td>One active jacket</td>
-                    <td>A student may only have one active jacket assignment at a time</td>
-                </tr>
-                <tr>
-                    <td>One active pants</td>
-                    <td>A student may only have one active pants assignment at a time</td>
-                </tr>
-                <tr>
                     <td>One active holder</td>
-                    <td>A uniform item may only be assigned to one student at a time</td>
+                    <td>A uniform may only have one active assignment at a time</td>
                 </tr>
                 <tr>
-                    <td>Percussion gloves rule</td>
-                    <td>Percussion students should not be assigned gloves</td>
+                    <td>Multiple uniforms allowed</td>
+                    <td>A student may be assigned multiple uniforms at the same time</td>
+                </tr>
+                <tr>
+                    <td>Staff tracking</td>
+                    <td>Each assignment should record the staff member who issued it</td>
                 </tr>
             </table>
         </div>
