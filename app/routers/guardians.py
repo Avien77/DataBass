@@ -100,7 +100,6 @@ def add_guardian_page(request: Request):
 @router.post("/add-guardian", response_class=HTMLResponse)
 def add_guardian_submit(
     request: Request,
-    guard_id: str = Form(...),
     first_name: str = Form(...),
     last_name: str = Form(...),
     phone: str = Form(...),
@@ -113,9 +112,9 @@ def add_guardian_submit(
     error_message = None
 
     try:
-        cursor.execute("INSERT INTO Guardian (Guardian_ID, Guardian_FName, Guardian_LName, Guardian_Phone) VALUES" \
-        "(%s, %s, %s, %s)",
-        (guard_id, first_name, last_name, phone))
+        cursor.execute("INSERT INTO Guardian (Guardian_FName, Guardian_LName, Guardian_Phone) VALUES" \
+        "(%s, %s, %s)",
+        (first_name, last_name, phone))
         conn.commit()
         success = True
     except Exception as e:
@@ -152,10 +151,10 @@ def edit_student_page(request: Request, id: str):
     return templates.TemplateResponse(request, "add_guardian.html", {"guardian": guardian})
 
 
-@router.post("/edit-guardian/{id}")
+@router.post("/edit-guardian/{guard_id}")
 def edit_guardian_submit(
     request: Request,
-    guard_id: str = Form(...),
+    guard_id: str,
     first_name: str = Form(...),
     last_name: str = Form(...),
     phone: str = Form(...),
@@ -186,7 +185,7 @@ def edit_guardian_submit(
     return templates.TemplateResponse(
         request,
         "guardian.html",
-        {"guardian": {"Guardian_ID": id}, "message": f"Failed to update guardian: {error_message}"},
+        {"guardian": {"Guardian_ID": guard_id}, "message": f"Failed to update guardian: {error_message}"},
         status_code=500
     )
 
