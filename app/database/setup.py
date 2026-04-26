@@ -44,8 +44,54 @@ def init_db():
         
         conn.commit()
         print("--- Database Setup Complete ---")
+        seed_db()
+
+
     except Exception as e:
         print(f"CRITICAL ERROR during DB Setup: {e}")
+    finally:
+        if 'conn' in locals() and conn.is_connected(): #type: ignore
+            cursor.close() #type: ignore
+            conn.close() #type: ignore
+
+def seed_db():
+    """
+    Truncates all tables then re-inserts seed data from seed.sql.
+    """
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASS"),
+            database=os.getenv("DB_NAME")
+        )
+        cursor = conn.cursor()
+
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
+        for table in ["Student_Uniform_Rentals", "Student_Instrument_Rentals",
+                      "Student_Guardian", "Student", "Uniform", "Instrument",
+                      "Guardian", "Role", "Instrument_Types"]:
+            cursor.execute(f"TRUNCATE TABLE {table}")
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
+        print("Tables cleared.")
+
+        seed_path = os.path.join(os.path.dirname(__file__), "seed.sql")
+        with open(seed_path, "r") as f:
+            sql = f.read()
+
+        def strip_comments(s: str) -> str:
+            return "\n".join(l for l in s.splitlines() if not l.strip().startswith("--")).strip()
+
+        statements = [strip_comments(s) for s in sql.split(";")]
+        for stmt in statements:
+            if stmt:
+                cursor.execute(stmt)
+
+        conn.commit()
+        print("--- Seed Data Inserted ---")
+
+    except Exception as e:
+        print(f"ERROR during seeding: {e}")
     finally:
         if 'conn' in locals() and conn.is_connected(): #type: ignore
             cursor.close() #type: ignore

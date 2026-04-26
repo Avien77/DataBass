@@ -17,7 +17,20 @@
             <h2>View Rental</h2>
 
             <form method="post" action="/rental">
-                <input type="text" name="stud_id" placeholder="Student ID" required>
+                <div class="grid-container">
+                    <div class="card">
+                        <label for="search_query">Search Query:</label>
+                        <input type="text" name="search_query" placeholder="Enter student ID, instrument ID, or uniform ID">
+                    </div>
+
+                    <div class="card">
+                        <label for="search_by">Type:</label>
+                        <div><input title="Student" type="checkbox" name="search_by" value="student"> Student</div>
+                        <div><input title="Instrument" type="checkbox" name="search_by" value="instrument"> Instrument</div>
+                        <div><input title="Uniform" type="checkbox" name="search_by" value="uniform"> Uniform</div>
+                    </div>
+
+                </div>
                 <button type="submit">Search</button>
             </form>
         </div>
