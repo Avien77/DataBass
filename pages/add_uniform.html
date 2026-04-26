@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Uniform</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <main class="main-content">
+
+        <div class="card form-card">
+            <h2>Add New Uniform</h2>
+            <h3>All measurements in inches</h3>
+            <form method="post" action="/add-uniform">
+                <select title="Role" name="role_id" required>
+                    <option value="" disabled selected>Select Role</option>
+                    {% for role in roles %}
+                    <option value="{{ role.Role_ID }}">{{ role.Role_Name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="chest" placeholder="Chest" step="0.01" required>
+                <input type="number" name="arms" placeholder="Arms" step="0.01" required>
+                <input type="number" name="hips" placeholder="Hips" step="0.01" required>
+                <input type="number" name="waist" placeholder="Waist" step="0.01" required>
+                <input type="number" name="inseam" placeholder="Inseam" step="0.01" required>
+                <select title="Gloves" name="gloves" required>
+                    <option value="" disabled selected>Select Gloves</option>
+                    <option value="None">No Gloves</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </select>
+
+                <button type="submit">Add Uniform</button>
+            </form>
+        </div>
+
+    </main>
+</body>
+</html>

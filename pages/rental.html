@@ -25,13 +25,15 @@
             
             <table>
                 <tr>
-                    <th>Student ID</th>
                     <th>Instrument ID</th>
+                    <th>Student Renter</th>
+                    <th>Instrument Type</th>
                     <th>Rental Start Date</th>
                     <th>Rental End Date</th>
                 </tr>
                 {% for r in instrument_rentals %}
                 <tr>
+                    <td>{{ r.Instrument_ID }}</td>
                     <td>{{ r.Stud_FName }} {{ r.Stud_LName }}</td>
                     <td>{{ r.Instr_Type_Name }}</td>
                     <td>{{ r.Instr_Rental_Start_Date }}</td>
@@ -39,8 +41,29 @@
                 </tr>
                 {% endfor %}
             </table>
+        </div>
 
+        <div class="card">
+            <h3>Uniform Rentals</h3>
             
+            <table>
+                <tr>
+                    <th>Uniform ID</th>
+                    <th>Student Name</th>
+                    <th>Uniform Type</th>
+                    <th>Rental Start Date</th>
+                    <th>Rental End Date</th>
+                </tr>
+                {% for r in uniform_rentals %}
+                <tr>
+                    <td>{{ r.Uniform_ID }}</td>
+                    <td>{{ r.Stud_FName }} {{ r.Stud_LName }}</td>
+                    <td>{{ r.Role_Name }}</td>
+                    <td>{{ r.Unif_Rental_Start_Date }}</td>
+                    <td>{{ r.Unif_Rental_End_Date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
 
         {% if rentals %}
