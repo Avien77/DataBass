@@ -95,7 +95,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
  
             if query:
                 cursor.execute(
-                    "SELECT u.Uniform_ID, r.role AS Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
+                    "SELECT u.Uniform_ID, r.Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
                     "sur.Stud_ID "
                     "FROM Uniform u "
@@ -103,12 +103,12 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "LEFT JOIN Student_Uniform_Rentals sur ON u.Uniform_ID = sur.Uniform_ID "
                     "AND sur.Unif_Rental_End_Date IS NULL "
                     "WHERE CAST(u.Uniform_ID AS CHAR) LIKE %s "
-                    "OR r.role LIKE %s",
+                    "OR r.Role_Name LIKE %s",
                     (f"%{query}%",) * 2
                 )
             else:
                 cursor.execute(
-                    "SELECT u.Uniform_ID, r.role AS Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
+                    "SELECT u.Uniform_ID, r.Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
                     "sur.Stud_ID "
                     "FROM Uniform u "
@@ -121,7 +121,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
             results = [
                 [
                     row["Uniform_ID"],
-                    row["Role_Name"] or "—",
+                    row["Role_Name"] or "—",  # column is Role_Name in Role table
                     row["Uniform_Chest"] or "—",
                     row["Uniform_Arms"] or "—",
                     row["Uniform_Hips"] or "—",
@@ -238,4 +238,3 @@ def search_page(request: Request, category: str = "", query: str = ""):
             "query": query,
         }
     )
- 
