@@ -3,26 +3,26 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app import db
-
+ 
 router = APIRouter()
 app = FastAPI(title="DataBass")
-
+ 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="pages")
-
-
+ 
+ 
 @router.get("/search", response_class=HTMLResponse)
 def search_page(request: Request, category: str = "", query: str = ""):
     headers = []
     results = []
-
+ 
     conn = db.get_db_conn()
     cursor = conn.cursor(dictionary=True)
-
+ 
     try:
         if category == "students":
             headers = ["Student ID", "First Name", "Last Name", "Year", "Gender", "Phone", "Email"]
-
+ 
             if query:
                 cursor.execute(
                     "SELECT Stud_ID, Stud_FName, Stud_LName, Year_ID, Stud_Gender, Stud_Phone, Stud_Email "
@@ -39,7 +39,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "SELECT Stud_ID, Stud_FName, Stud_LName, Year_ID, Stud_Gender, Stud_Phone, Stud_Email "
                     "FROM Student"
                 )
-
+ 
             year_map = {1: "Freshman", 2: "Sophomore", 3: "Junior", 4: "Senior"}
             rows = cursor.fetchall()
             results = [
@@ -54,10 +54,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 ]
                 for row in rows
             ]
-
+ 
         elif category == "guardians":
             headers = ["Guardian ID", "First Name", "Last Name", "Phone", "Student ID"]
-
+ 
             if query:
                 cursor.execute(
                     "SELECT g.Guardian_ID, g.Guardian_FName, g.Guardian_LName, "
@@ -77,7 +77,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "FROM Guardian g "
                     "LEFT JOIN Student_Guardian sg ON g.Guardian_ID = sg.Guardian_ID"
                 )
-
+ 
             rows = cursor.fetchall()
             results = [
                 [
@@ -89,13 +89,13 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 ]
                 for row in rows
             ]
-
+ 
         elif category == "uniforms":
             headers = ["Uniform ID", "Role", "Chest", "Arms", "Hips", "Waist", "Inseam", "Gloves", "Student ID"]
-
+ 
             if query:
                 cursor.execute(
-                    "SELECT u.Uniform_ID, r.Role, u.Uniform_Chest, u.Uniform_Arms, "
+                    "SELECT u.Uniform_ID, r.role AS Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
                     "sur.Stud_ID "
                     "FROM Uniform u "
@@ -103,12 +103,12 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "LEFT JOIN Student_Uniform_Rentals sur ON u.Uniform_ID = sur.Uniform_ID "
                     "AND sur.Unif_Rental_End_Date IS NULL "
                     "WHERE CAST(u.Uniform_ID AS CHAR) LIKE %s "
-                    "OR r.Role LIKE %s",
+                    "OR r.role LIKE %s",
                     (f"%{query}%",) * 2
                 )
             else:
                 cursor.execute(
-                    "SELECT u.Uniform_ID, r.Role, u.Uniform_Chest, u.Uniform_Arms, "
+                    "SELECT u.Uniform_ID, r.role AS Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
                     "sur.Stud_ID "
                     "FROM Uniform u "
@@ -116,12 +116,12 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "LEFT JOIN Student_Uniform_Rentals sur ON u.Uniform_ID = sur.Uniform_ID "
                     "AND sur.Unif_Rental_End_Date IS NULL"
                 )
-
+ 
             rows = cursor.fetchall()
             results = [
                 [
                     row["Uniform_ID"],
-                    row["Role"] or "—",
+                    row["Role_Name"] or "—",
                     row["Uniform_Chest"] or "—",
                     row["Uniform_Arms"] or "—",
                     row["Uniform_Hips"] or "—",
@@ -132,10 +132,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 ]
                 for row in rows
             ]
-
+ 
         elif category == "instruments":
             headers = ["Instrument ID", "Type", "Rented To", "Student ID", "Rented Out Date", "Return Date", "Status"]
-
+ 
             if query:
                 cursor.execute(
                     "SELECT i.Instrument_ID, t.Instr_Type_Name, "
@@ -161,7 +161,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "LEFT JOIN Student_Instrument_Rentals r ON i.Instrument_ID = r.Instrument_ID "
                     "LEFT JOIN Student s ON r.Stud_ID = s.Stud_ID"
                 )
-
+ 
             rows = cursor.fetchall()
             results = [
                 [
@@ -176,10 +176,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 ]
                 for row in rows
             ]
-
+ 
         elif category == "rentals":
             headers = ["Student ID", "Student Name", "Instrument Type", "Start Date", "End Date", "Start Condition", "End Condition", "Status"]
-
+ 
             if query:
                 cursor.execute(
                     "SELECT r.Stud_ID, s.Stud_FName, s.Stud_LName, t.Instr_Type_Name, "
@@ -205,7 +205,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "JOIN Instrument i ON r.Instrument_ID = i.Instrument_ID "
                     "JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID"
                 )
-
+ 
             rows = cursor.fetchall()
             results = [
                 [
@@ -220,13 +220,13 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 ]
                 for row in rows
             ]
-
+ 
     except Exception as e:
         print(f"Search error: {e}")
     finally:
         cursor.close()
         conn.close()
-
+ 
     return templates.TemplateResponse(
         request,
         "search.html",
@@ -238,3 +238,4 @@ def search_page(request: Request, category: str = "", query: str = ""):
             "query": query,
         }
     )
+ 
