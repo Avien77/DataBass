@@ -26,24 +26,24 @@ INSERT IGNORE INTO Instrument_Types (Instr_Type_ID, Instr_Type_Name) VALUES
 
 -- Guardians
 INSERT INTO Guardian (Guardian_FName, Guardian_LName, Guardian_Phone) VALUES
-('Patricia', 'Anderson',  '555-0101'),
-('Robert',   'Martinez',  '555-0102'),
-('Linda',    'Thompson',  '555-0103'),
-('James',    'Jackson',   '555-0104'),
-('Barbara',  'White',     '555-0105');
+('Dean', 'Chamra',  '555-0101'),
+('Jane',   'Dietrich',  '555-0102'),
+('Kelli',    'Foskic',  '555-0103'),
+('Laura',    'Kroger',   '555-0104'),
+('Christopher',  'Kobus',     '555-0105');
 
 -- Students
 INSERT INTO Student (Stud_FName, Stud_LName, Stud_Phone, Year_ID, Stud_Gender, Stud_Email) VALUES
-('Emma',     'Anderson',  '555-1001', 1, 'Female', 'emma.anderson@school.edu'),
-('Liam',     'Martinez',  '555-1002', 2, 'Male',   'liam.martinez@school.edu'),
-('Olivia',   'Thompson',  '555-1003', 3, 'Female', 'olivia.thompson@school.edu'),
-('Noah',     'Jackson',   '555-1004', 4, 'Male',   'noah.jackson@school.edu'),
-('Ava',      'White',     '555-1005', 1, 'Female', 'ava.white@school.edu'),
-('William',  'Harris',    '555-1006', 2, 'Male',   'william.harris@school.edu'),
-('Sophia',   'Clark',     '555-1007', 3, 'Female', 'sophia.clark@school.edu'),
-('James',    'Lewis',     '555-1008', 4, 'Male',   'james.lewis@school.edu'),
-('Isabella', 'Robinson',  '555-1009', 1, 'Female', 'isabella.robinson@school.edu'),
-('Oliver',   'Walker',    '555-1010', 2, 'Male',   'oliver.walker@school.edu');
+('Kaeden',    'Bryer',  '1234567890', 1, 'Male', 'kaedenbryer@oakland.edu'),
+('Pablo',     'Avila',  '1234567890', 2, 'Male',   'avila@oakland.edu'),
+('Nate',   'Oberdier',  '1234567890', 3, 'Male', 'noberdier@oakland.edu'),
+('Nicholas',  'Sakowski',   '1234567890', 4, 'Male',   'nsakowski@oakland.edu'),
+('Julia',      'Schoen',     '1234567890', 1, 'Female', 'jtschoen@oakland.edu'),
+('Grant',  'Kerry',    '1234567890', 2, 'Male',   'gkerry@oakland.edu'),
+('Charlie',   'Hayes',     '1234567890', 3, 'Female', 'hayes@oakland.edu'),
+('Alec',    'Barnes',     '1234567890', 4, 'Male',   'barnsey@oakland.edu'),
+('Avery', 'Schepke',  '1234567890', 1, 'Female', 'aschepke@oakland.edu'),
+('Sen',   'Jutsu',    '1234567890', 2, 'Male',   'sen@oakland.edu');
 
 -- Student-Guardian relationships
 INSERT INTO Student_Guardian (Stud_ID, Guardian_ID) VALUES
