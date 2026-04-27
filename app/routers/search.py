@@ -56,14 +56,15 @@ def search_page(request: Request, category: str = "", query: str = ""):
             ]
  
         elif category == "guardians":
-            headers = ["Guardian ID", "First Name", "Last Name", "Phone", "Student ID"]
+            headers = ["Guardian ID", "First Name", "Last Name", "Phone", "Student Name"]
  
             if query:
                 cursor.execute(
                     "SELECT g.Guardian_ID, g.Guardian_FName, g.Guardian_LName, "
-                    "g.Guardian_Phone, sg.Stud_ID "
+                    "g.Guardian_Phone, s.Stud_FName, s.Stud_LName "
                     "FROM Guardian g "
                     "LEFT JOIN Student_Guardian sg ON g.Guardian_ID = sg.Guardian_ID "
+                    "LEFT JOIN Student s ON sg.Stud_ID = s.Stud_ID "
                     "WHERE CAST(g.Guardian_ID AS CHAR) LIKE %s "
                     "OR g.Guardian_FName LIKE %s "
                     "OR g.Guardian_LName LIKE %s "
@@ -73,9 +74,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
             else:
                 cursor.execute(
                     "SELECT g.Guardian_ID, g.Guardian_FName, g.Guardian_LName, "
-                    "g.Guardian_Phone, sg.Stud_ID "
+                    "g.Guardian_Phone, s.Stud_FName, s.Stud_LName "
                     "FROM Guardian g "
-                    "LEFT JOIN Student_Guardian sg ON g.Guardian_ID = sg.Guardian_ID"
+                    "LEFT JOIN Student_Guardian sg ON g.Guardian_ID = sg.Guardian_ID "
+                    "LEFT JOIN Student s ON sg.Stud_ID = s.Stud_ID"
                 )
  
             rows = cursor.fetchall()
@@ -85,23 +87,24 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     row["Guardian_FName"],
                     row["Guardian_LName"],
                     row["Guardian_Phone"] or "—",
-                    row["Stud_ID"] or "—",
+                    f"{row['Stud_FName']} {row['Stud_LName']}" if row["Stud_FName"] else "—",
                 ]
                 for row in rows
             ]
  
         elif category == "uniforms":
-            headers = ["Uniform ID", "Role", "Chest", "Arms", "Hips", "Waist", "Inseam", "Gloves", "Student ID"]
+            headers = ["Uniform ID", "Role", "Chest", "Arms", "Hips", "Waist", "Inseam", "Gloves", "Student Name"]
  
             if query:
                 cursor.execute(
                     "SELECT u.Uniform_ID, r.Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
-                    "sur.Stud_ID "
+                    "s.Stud_FName, s.Stud_LName "
                     "FROM Uniform u "
                     "JOIN Role r ON u.Role_ID = r.Role_ID "
                     "LEFT JOIN Student_Uniform_Rentals sur ON u.Uniform_ID = sur.Uniform_ID "
                     "AND sur.Unif_Rental_End_Date IS NULL "
+                    "LEFT JOIN Student s ON sur.Stud_ID = s.Stud_ID "
                     "WHERE CAST(u.Uniform_ID AS CHAR) LIKE %s "
                     "OR r.Role_Name LIKE %s",
                     (f"%{query}%",) * 2
@@ -110,11 +113,12 @@ def search_page(request: Request, category: str = "", query: str = ""):
                 cursor.execute(
                     "SELECT u.Uniform_ID, r.Role_Name, u.Uniform_Chest, u.Uniform_Arms, "
                     "u.Uniform_Hips, u.Uniform_Waist, u.Uniform_Inseam, u.Uniform_Gloves, "
-                    "sur.Stud_ID "
+                    "s.Stud_FName, s.Stud_LName "
                     "FROM Uniform u "
                     "JOIN Role r ON u.Role_ID = r.Role_ID "
                     "LEFT JOIN Student_Uniform_Rentals sur ON u.Uniform_ID = sur.Uniform_ID "
-                    "AND sur.Unif_Rental_End_Date IS NULL"
+                    "AND sur.Unif_Rental_End_Date IS NULL "
+                    "LEFT JOIN Student s ON sur.Stud_ID = s.Stud_ID"
                 )
  
             rows = cursor.fetchall()
@@ -128,7 +132,7 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     row["Uniform_Waist"] or "—",
                     row["Uniform_Inseam"] or "—",
                     row["Uniform_Gloves"] or "—",
-                    row["Stud_ID"] or "—",
+                    f"{row['Stud_FName']} {row['Stud_LName']}" if row["Stud_FName"] else "—",
                 ]
                 for row in rows
             ]

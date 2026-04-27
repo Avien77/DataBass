@@ -21,7 +21,13 @@ def uniforms_page(request: Request, query: str = ""):
     error_message = None
 
     try:
-        cursor.execute("SELECT * FROM Uniform u inner join role r on u.Role_ID = r.Role_ID")
+        cursor.execute(
+            "SELECT u.*, r.*, IF(sur.Uniform_ID IS NOT NULL, 1, 0) AS Uniform_Status "
+            "FROM Uniform u "
+            "INNER JOIN Role r ON u.Role_ID = r.Role_ID "
+            "LEFT JOIN Student_Uniform_Rentals sur "
+            "ON u.Uniform_ID = sur.Uniform_ID AND sur.Unif_Rental_End_Date IS NULL"
+        )
         uniforms = cursor.fetchall()
 
         cursor.execute("SELECT * FROM Role")
@@ -81,14 +87,17 @@ def search_uniforms(
 
     try:
         query = """
-            SELECT *,
+            SELECT u.*, r.*,
+              IF(sur.Uniform_ID IS NOT NULL, 1, 0) AS Uniform_Status,
               ABS(Uniform_Chest - %s) +
               ABS(Uniform_Arms - %s) +
               ABS(Uniform_Hips - %s) +
               ABS(Uniform_Waist - %s) +
               ABS(Uniform_Inseam - %s) as difference
             FROM Uniform u
-            inner join role r on u.Role_ID = r.Role_ID
+            INNER JOIN Role r ON u.Role_ID = r.Role_ID
+            LEFT JOIN Student_Uniform_Rentals sur
+              ON u.Uniform_ID = sur.Uniform_ID AND sur.Unif_Rental_End_Date IS NULL
             WHERE u.Role_ID = %s
             ORDER BY difference ASC
         """
@@ -225,6 +234,26 @@ def assign_uniform(request: Request, uniform_id: str, stud_id: str):
     error_message = None
 
     try:
+        cursor.execute(
+            "SELECT Uniform_ID FROM Student_Uniform_Rentals "
+            "WHERE Uniform_ID = %s AND Unif_Rental_End_Date IS NULL",
+            (uniform_id,)
+        )
+        if cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return templates.TemplateResponse(
+                request=request,
+                name="assign_uniform.html",
+                context={
+                    "request": request,
+                    "uniform_id": uniform_id,
+                    "students": [],
+                    "message": "This uniform is already assigned to a student."
+                },
+                status_code=409
+            )
+
         cursor.execute("""
             insert into Student_Uniform_Rentals (Uniform_ID, Stud_ID, Unif_Rental_Start_Date)
             values (%s, %s, CURDATE())

@@ -36,14 +36,14 @@
                 </thead>
                 <tbody>
                     {% for instrument in instruments %}
-                    <tr>
+                    <tr {% if instrument.Instrument_Status == 1 %}class="rented-out" {% endif %}>
                         <td>{{ instrument.Instrument_ID }}</td>
                         <td>{{ instrument.Instr_Type_Name }}</td>
                         <td>
                             <table>
                                 <td><form method="get" action="/edit-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Edit</button></form></td>
                                 <td><form method="get" action="/delete-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Delete</button></form></td>
-                                <td><form method="get" action="/assign-instrument/{{ instrument.Instrument_ID }}"><button type="submit">Assign</button></form></td>
+                                <td><form method="get" action="/assign-instrument/{{ instrument.Instrument_ID }}"><button type="submit" {% if instrument.Instrument_Status == 1 %}disabled {% endif %}>Assign</button></form></td>
                             </table>
                         </td>
                     </tr>

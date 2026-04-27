@@ -68,7 +68,7 @@
                 <tbody>
                     {% if uniforms %}
                         {% for uniform in uniforms %}
-                        <tr>
+                        <tr {% if uniform.Uniform_Status == 1 %}class="rented-out"{% endif %}>
                             <td>{{ uniform.Uniform_ID }}</td>
                             <td>{{ uniform.Role_Name }}</td>
                             <td>{{ uniform.Uniform_Chest }}</td>
@@ -80,7 +80,7 @@
                             {% if uniform.difference is defined %}
                                 <td>{{ uniform.difference }}</td>
                                 <td><form method="get" action="/assign-uniform/{{ uniform.Uniform_ID }}">
-                                    <button type="submit">Assign Uniform</button>
+                                    <button type="submit" {% if uniform.Uniform_Status == 1 %}disabled{% endif %}>Assign Uniform</button>
                                 </form></td>
                             {% endif %}
                         </tr>

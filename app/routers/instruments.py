@@ -17,8 +17,11 @@ def instruments_page(request: Request):
 
     try:
         cursor.execute(
-            "SELECT * FROM Instrument i "
-            "INNER JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID"
+            "SELECT i.*, t.*, IF(sir.Instrument_ID IS NOT NULL, 1, 0) AS Instrument_Status "
+            "FROM Instrument i "
+            "INNER JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
+            "LEFT JOIN Student_Instrument_Rentals sir "
+            "ON i.Instrument_ID = sir.Instrument_ID AND sir.Instr_Rental_End_Date IS NULL"
         )
         instruments = cursor.fetchall()
     finally:
@@ -105,16 +108,18 @@ def search_instruments(
     error_message = None
 
     try:
+        base = (
+            "SELECT i.*, t.*, IF(sir.Instrument_ID IS NOT NULL, 1, 0) AS Instrument_Status "
+            "FROM Instrument i "
+            "INNER JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
+            "LEFT JOIN Student_Instrument_Rentals sir "
+            "ON i.Instrument_ID = sir.Instrument_ID AND sir.Instr_Rental_End_Date IS NULL"
+        )
         if not query:
-            cursor.execute(
-                "SELECT * FROM Instrument i "
-                "INNER JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID"
-            )
+            cursor.execute(base)
         else:
             cursor.execute(
-                "SELECT * FROM Instrument i "
-                "INNER JOIN Instrument_Types t ON i.Instrument_Type = t.Instr_Type_ID "
-                "WHERE CAST(i.Instrument_ID AS CHAR) LIKE %s OR t.Instr_Type_Name LIKE %s",
+                base + " WHERE CAST(i.Instrument_ID AS CHAR) LIKE %s OR t.Instr_Type_Name LIKE %s",
                 (f"%{query}%", f"%{query}%")
             )
         instruments = cursor.fetchall()
