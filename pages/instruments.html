@@ -19,7 +19,11 @@
 
         <div class="card">
             <h3>Instrument List</h3>
-            <form method="get" action="/add-instrument"><button type="submit">Add Instrument</button></form>
+            <div class="button-group">
+                <form method="get" action="/add-instrument"><button type="submit">Add Instrument</button></form>
+                <form method="get" action="/create-instrument"><button type="submit">Create New Instrument</button></form>
+            </div>
+
 
             {% if instruments %}
             <table>

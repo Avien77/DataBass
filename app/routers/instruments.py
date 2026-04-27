@@ -314,3 +314,46 @@ def assign_instrument_submit(
             "message": f"Error assigning instrument: {error_message}"
         }
     )
+
+@router.get("/create-instrument", response_class=HTMLResponse)
+def create_instrument_page(request: Request):
+    
+    conn = db.get_db_conn()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM Instrument_Types")
+        instrument_types = cursor.fetchall()
+    except Exception as e:
+        instrument_types = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return templates.TemplateResponse(
+        request,
+        "create_instrument.html",
+        {
+            "request": request,
+            "instrument_types": instrument_types
+        }
+    )
+
+@router.post("/create-instrument", response_class=HTMLResponse)
+def create_instrument_submit(
+    request: Request, 
+    instrument_name: str = Form(...)
+):
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("INSERT INTO Instrument_Types (Instr_Type_Name) VALUES (%s)", (instrument_name,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    return RedirectResponse(url="/create-instrument", status_code=303)

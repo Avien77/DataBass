@@ -108,7 +108,12 @@ button {
   font-weight: bold;
 }
 
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 button:hover {
   background: #219150;
 }
-
