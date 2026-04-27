@@ -68,8 +68,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "WHERE CAST(g.Guardian_ID AS CHAR) LIKE %s "
                     "OR g.Guardian_FName LIKE %s "
                     "OR g.Guardian_LName LIKE %s "
-                    "OR g.Guardian_Phone LIKE %s",
-                    (f"%{query}%",) * 4
+                    "OR g.Guardian_Phone LIKE %s "
+                    "OR s.Stud_FName LIKE %s "
+                    "OR s.Stud_LName LIKE %s",
+                    (f"%{query}%",) * 6
                 )
             else:
                 cursor.execute(
@@ -106,8 +108,10 @@ def search_page(request: Request, category: str = "", query: str = ""):
                     "AND sur.Unif_Rental_End_Date IS NULL "
                     "LEFT JOIN Student s ON sur.Stud_ID = s.Stud_ID "
                     "WHERE CAST(u.Uniform_ID AS CHAR) LIKE %s "
-                    "OR r.Role_Name LIKE %s",
-                    (f"%{query}%",) * 2
+                    "OR r.Role_Name LIKE %s "
+                    "OR s.Stud_FName LIKE %s "
+                    "OR s.Stud_LName LIKE %s",
+                    (f"%{query}%",) * 4
                 )
             else:
                 cursor.execute(
