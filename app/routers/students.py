@@ -294,3 +294,31 @@ def student_details_page(request: Request, stud_id: str = ""):
             "rentals": rentals
         }
     )
+
+@router.get("/update-year", response_class=HTMLResponse)
+def update_year(request: Request):
+    conn = db.get_db_conn()
+    cursor = conn.cursor()
+
+    success = False
+    error_message = None
+
+    try:
+        cursor.execute("UPDATE Student SET Year_ID = Year_ID + 1 where 1=1")
+        conn.commit()
+        success = True
+    except Exception as e:
+        error_message = str(e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+    if success:
+        return RedirectResponse(url="/students", status_code=303)
+    return templates.TemplateResponse(
+        request,
+        "dashboard.html",
+        {"request": request, "error": f"Failed to update year: {error_message}"},
+        status_code=500
+    )

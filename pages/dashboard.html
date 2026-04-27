@@ -37,20 +37,24 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Add Student</td>
+                        <td><form method="get" action="/add-student"><button type="submit">Add Student</button></form></td>
                         <td>Create a new student record</td>
                     </tr>
                     <tr>
-                        <td>Assign Uniform</td>
+                        <td><form method="get" action="/uniforms"><button type="submit">Assign Uniform</button></form></td>
                         <td>Issue a jacket or pants item to a student</td>
                     </tr>
                     <tr>
-                        <td>Assign Instrument</td>
+                        <td><form method="get" action="/instruments"><button type="submit">Assign Instrument</button></form></td>
                         <td>Issue an instrument to a student</td>
                     </tr>
                     <tr>
-                        <td>Return Item</td>
-                        <td>Mark a rental as returned and update condition</td>
+                        <td><form method="get" action="/link-guardian"><button type="submit">Assign Guardian</button></form></td>
+                        <td>Assign a guardian to a student</td>
+                    </tr>
+                    <tr>
+                        <td><form method="get" action="/update-year"><button type="submit">Next Year</button></form></td>
+                        <td>Update student records for the next academic year</td>
                     </tr>
                 </tbody>
             </table>

@@ -52,7 +52,7 @@
         </div>
         {% else %}
         <h1>No Guardians Matching Search</h1>
-        <button title="Search Again"><a href="/guardians">Search again?</a></button>
+        <form method="get" action="/guardians"><button type="submit" title="Search Again">Search again?</button></form>
         {% endif %}
 
     </main>
